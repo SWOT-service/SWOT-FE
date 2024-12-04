@@ -1,29 +1,43 @@
 'use client';
 
-import { ChangeEvent, Dispatch, MouseEvent, SetStateAction, useLayoutEffect, useState } from "react";
-import Image from "next/image";
+import {
+  ChangeEvent,
+  Dispatch,
+  MouseEvent,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
+import Image from 'next/image';
 
-import { ConfirmButton, Portal } from "@components";
-import { IconCheck, IconSearch, ImageArrowBack } from "@assets";
-import { LOCATION_LIST } from "@data";
-import { randomId } from "@utils";
+import { ConfirmButton, Portal } from '@components';
+import { IconCheck, IconSearch, ImageArrowBack } from '@assets';
+import { randomId } from '@utils';
 
 import styled from './styles.module.scss';
 
-const getLocationList = (word: string) => {
-  if (!word) {
-    return [...LOCATION_LIST];
+async function getLocationList(query: string) {
+  if (!query) return [];
+
+  const response = await fetch(
+    `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(query)}`,
+    {
+      headers: {
+        Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_REST_API_KEY}`,
+      },
+    },
+  );
+
+  if (!response.ok) {
+    console.error('위치 검색 실패');
+    return [];
   }
 
-  const result = [];
-
-  for (const location of LOCATION_LIST) {
-    if (location.name.includes(word) || location.location.includes(word)) {
-      result.push(location);
-    }
-  }
-
-  return result;
+  const data = await response.json();
+  return data.documents.map((doc: any) => ({
+    name: doc.place_name,
+    location: doc.road_address_name || doc.address_name,
+  }));
 }
 
 function LocationListItem({
@@ -31,20 +45,21 @@ function LocationListItem({
   selected,
   setSelected,
 }: {
-  location : {
-    name: string,
-    location: string,
-  },
-  selected: string,
-  setSelected: Dispatch<SetStateAction<string>>,
+  location: {
+    name: string;
+    location: string;
+  };
+  selected: string;
+  setSelected: Dispatch<SetStateAction<string>>;
 }) {
   const onClickItem = () => {
     setSelected(location.name);
-  }
+  };
 
   return (
     <div className={styled.list_item} onClick={onClickItem}>
-      <div className={`${styled.check_box} ${selected === location.name && styled.selected}`}>
+      <div
+        className={`${styled.check_box} ${selected === location.name && styled.selected}`}>
         <IconCheck />
       </div>
       <div className={styled.text_wrapper}>
@@ -52,7 +67,7 @@ function LocationListItem({
         <p className={styled.location}>{location.location}</p>
       </div>
     </div>
-  )
+  );
 }
 
 export function LocationModal({
@@ -62,25 +77,28 @@ export function LocationModal({
   hideModal,
   unshowModal,
 }: {
-  title?: string,
-  location?: string,
-  selectLocation: (location: string) => void,
-  hideModal: (event: MouseEvent<HTMLElement>) => void,
-  unshowModal: () => void,
+  title?: string;
+  location?: string;
+  selectLocation: (location: string) => void;
+  hideModal: (event: MouseEvent<HTMLElement>) => void;
+  unshowModal: () => void;
 }) {
   const [selected, setSelected] = useState('');
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
+  const [locationList, setLocationList] = useState<
+    { name: string; location: string }[]
+  >([]);
 
   const onChangeInput = (event: ChangeEvent<HTMLInputElement>) => {
     setInput(event.target.value);
-  }
+  };
 
   const onClickBack = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
 
     unshowModal();
-  }
+  };
 
   const onClickButton = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -88,16 +106,30 @@ export function LocationModal({
 
     selectLocation(selected);
     unshowModal();
-  }
+  };
 
-  const locationList = getLocationList(input);
+  useEffect(() => {
+    let isMounted = true; // 컴포넌트가 언마운트되면 데이터를 무시하기 위해 사용
+    const fetchLocations = async () => {
+      const locations = await getLocationList(input);
+      if (isMounted) {
+        setLocationList(locations);
+      }
+    };
 
-  useLayoutEffect(() => {
+    fetchLocations();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [input]);
+
+  useEffect(() => {
     if (location) {
       setSelected(location);
     }
   }, [location]);
-  
+
   return (
     <Portal>
       <div className={styled.container}>
@@ -123,18 +155,16 @@ export function LocationModal({
             />
           </div>
           <div className={styled.location_list}>
-            {
-              locationList.map(location => {
-                return (
-                  <LocationListItem
-                    key={randomId()}
-                    location={location}
-                    selected={selected}
-                    setSelected={setSelected}
-                  />
-                )
-              })
-            }
+            {locationList.map((location) => {
+              return (
+                <LocationListItem
+                  key={randomId()}
+                  location={location}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+              );
+            })}
           </div>
           <div className={styled.button_wrapper}>
             <ConfirmButton
@@ -147,5 +177,5 @@ export function LocationModal({
         </div>
       </div>
     </Portal>
-  )
+  );
 }
