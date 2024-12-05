@@ -2,18 +2,23 @@
 
 import { unstable_cache } from 'next/cache';
 
-import { getCachedInProgressSchedule } from "@apis";
+import { getCachedInProgressSchedule } from '@apis';
 import { sortSchedule } from '@utils';
 import { ScheduleSummary } from '@types';
 import { WEEK_DAYS } from '@data';
 
-import { convertKoreanTime, getMonth, getThisWeek, getToday } from "./getDateInfo";
+import {
+  convertKoreanTime,
+  getMonth,
+  getThisWeek,
+  getToday,
+} from './getDateInfo';
 
 async function getWeeklyScheduleInfo(): Promise<ScheduleSummary[] | []> {
   const result = [];
-  
+
   const thisWeekInfo = getThisWeek();
-  const scheduleInfo = await getCachedInProgressSchedule() || [];
+  const scheduleInfo = (await getCachedInProgressSchedule()) || [];
 
   for (let i = 0; i < thisWeekInfo.length; i++) {
     const nowInfo: ScheduleSummary = {
@@ -21,12 +26,15 @@ async function getWeeklyScheduleInfo(): Promise<ScheduleSummary[] | []> {
       day: WEEK_DAYS[i],
       lectures: [],
     };
-    
+
     for (const schedule of scheduleInfo) {
-      if (schedule.lectureEndDate && new Date(thisWeekInfo[i]) > new Date(schedule.lectureEndDate)) {
+      if (
+        schedule.lectureEndDate &&
+        new Date(thisWeekInfo[i]) > new Date(schedule.lectureEndDate)
+      ) {
         continue;
       }
-      
+
       if (!schedule.lectureDays.includes(WEEK_DAYS[i])) {
         continue;
       }
@@ -47,14 +55,16 @@ export const getCachedWeeklyScheduleInfo = unstable_cache(
   {
     tags: ['schedule'],
     revalidate: 60,
-  }
+  },
 );
 
-async function getMonthlyScheduleInfo(month: string): Promise<ScheduleSummary[] | []> {
+async function getMonthlyScheduleInfo(
+  month: string,
+): Promise<ScheduleSummary[] | []> {
   const result = [];
-  
+
   const thisMonthInfo = getMonth(convertKoreanTime(new Date(month)));
-  const scheduleInfo = await getCachedInProgressSchedule() || [];
+  const scheduleInfo = (await getCachedInProgressSchedule()) || [];
 
   for (let i = 0; i < thisMonthInfo.length; i++) {
     const nowInfo: ScheduleSummary = {
@@ -62,11 +72,14 @@ async function getMonthlyScheduleInfo(month: string): Promise<ScheduleSummary[] 
       day: WEEK_DAYS[i % 7],
       lectures: [],
     };
-    
+
     for (const schedule of scheduleInfo) {
-      if (schedule.lectureEndDate && new Date(thisMonthInfo[i]) > new Date(schedule.lectureEndDate)) {
+      if (
+        schedule.lectureEndDate &&
+        new Date(thisMonthInfo[i]) > new Date(schedule.lectureEndDate)
+      ) {
         continue;
-      }      
+      }
 
       if (!schedule.lectureDays.includes(WEEK_DAYS[i % 7])) {
         continue;
@@ -89,15 +102,15 @@ export async function getCachedMonthlyScheduleInfo(month: string) {
     {
       tags: ['schedule', `schedule-${month}`],
       revalidate: 60,
-    }
+    },
   );
 
   return cachedData(month);
-};
+}
 
 export async function getTodayScheduleCount() {
   const scheduleInfo = await getWeeklyScheduleInfo();
-  
+
   const today = getToday();
 
   return scheduleInfo[today.getDay()].lectures.length;

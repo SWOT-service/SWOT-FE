@@ -1,6 +1,13 @@
 'use client';
 
-import { ForwardedRef, InputHTMLAttributes, forwardRef, useEffect, useRef, useState } from 'react';
+import {
+  ForwardedRef,
+  InputHTMLAttributes,
+  forwardRef,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { TimeModal } from '@components';
 import { TimeInputProps } from '@types';
@@ -14,70 +21,80 @@ const checkValue = (defalutValue: string) => {
   const regexp = /\d{2}:\d{2}-\d{2}:\d{2}$/g;
 
   return regexp.test(defalutValue);
-}
+};
 
 const TimeBlock = ({
   selectedTime,
   changeSelectedTime,
-  defaultTimeValue = "10:30",
+  defaultTimeValue = '06:00',
   placeholder = '',
-  valid
+  valid,
 }: {
-  selectedTime: string,
-  changeSelectedTime: (time: string) => void,
-  defaultTimeValue?: string,
-  placeholder?: string,
-  valid: boolean
+  selectedTime: string;
+  changeSelectedTime: (time: string) => void;
+  defaultTimeValue?: string;
+  placeholder?: string;
+  valid: boolean;
 }) => {
   const { modal, showModal, hideModal } = useModal();
-  
-  const hourValue = parseInt(selectedTime.split(":")[0]);
-  const minuteValue = selectedTime.split(":")[1];
+
+  const hourValue = parseInt(selectedTime.split(':')[0]);
+  const minuteValue = selectedTime.split(':')[1];
 
   return (
     <div className={styled.input_wrapper}>
       <div
         className={`${styled.time_input} ${selectedTime ? '' : styled.empty} ${!valid && styled.invalid}`}
-        onClick={showModal}
-      >
-        <span className={styled.meridiem}>{selectedTime ? hourValue >= 12 ? "PM" : "AM" : ''}</span>
-        <span>{selectedTime ? `${numberFormat(hourValue % 12)}:${minuteValue}` : placeholder}</span>
+        onClick={showModal}>
+        <span className={styled.meridiem}>
+          {selectedTime ? (hourValue >= 12 ? 'PM' : 'AM') : ''}
+        </span>
+        <span>
+          {selectedTime
+            ? `${numberFormat(hourValue % 12)}:${minuteValue}`
+            : placeholder}
+        </span>
       </div>
-      {
-        modal && 
+      {modal && (
         <TimeModal
           timeValue={selectedTime || defaultTimeValue}
           setTimeValue={changeSelectedTime}
           hideModal={hideModal}
         />
-      }
+      )}
     </div>
-  )
-}
+  );
+};
 
-function _TimeInput({
-  name,
-  valid = true,
-  defaultValue = "",
-  defaultTimeValue = "10:30",
-  errorMessage = '',
-  ...props
-}: TimeInputProps & InputHTMLAttributes<HTMLInputElement>,
-ref: ForwardedRef<HTMLInputElement>) {
+function _TimeInput(
+  {
+    name,
+    valid = true,
+    defaultValue = '',
+    defaultTimeValue = '06:00',
+    errorMessage = '',
+    ...props
+  }: TimeInputProps & InputHTMLAttributes<HTMLInputElement>,
+  ref: ForwardedRef<HTMLInputElement>,
+) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const flag = checkValue(defaultValue);
 
-  const [startTime, setStartTime] = useState<string>(flag ? defaultValue.slice(0, 5) : '');
-  const [endTime, setEndTime] = useState<string>(flag ? defaultValue.slice(6) : '');
-  
+  const [startTime, setStartTime] = useState<string>(
+    flag ? defaultValue.slice(0, 5) : '',
+  );
+  const [endTime, setEndTime] = useState<string>(
+    flag ? defaultValue.slice(6) : '',
+  );
+
   const changeStartTime = (time: string) => {
     setStartTime(time);
-  }
+  };
 
   const changeEndTime = (time: string) => {
     setEndTime(time);
-  }
+  };
 
   useEffect(() => {
     if (!startTime && !endTime) {
@@ -96,7 +113,7 @@ ref: ForwardedRef<HTMLInputElement>) {
         selectedTime={startTime}
         changeSelectedTime={changeStartTime}
         defaultTimeValue={defaultTimeValue}
-        placeholder='시작 시간'
+        placeholder="시작 시간"
         valid={valid}
       />
       <div className={styled.divider}>
@@ -106,35 +123,33 @@ ref: ForwardedRef<HTMLInputElement>) {
         selectedTime={endTime}
         changeSelectedTime={changeEndTime}
         defaultTimeValue={defaultTimeValue}
-        placeholder='종료 시간'
+        placeholder="종료 시간"
         valid={valid}
       />
       <div className={styled.icon_wrapper}>
         <IconClock width={20} height={20} />
       </div>
-      {
-        valid && 
-        <div className={`${styled.valid_warpper} ${startTime && endTime ? '' : styled.empty}`}>
+      {valid && (
+        <div
+          className={`${styled.valid_warpper} ${startTime && endTime ? '' : styled.empty}`}>
           <IconInputValid width={18} height={18} />
         </div>
-      }
-      {
-        checkValue(inputRef.current?.value || '') && errorMessage && 
+      )}
+      {checkValue(inputRef.current?.value || '') && errorMessage && (
         <div className={styled.error_message}>
           <p>{errorMessage}</p>
         </div>
-      }
-      {
-        errorMessage && 
+      )}
+      {errorMessage && (
         <div className={styled.error_message}>
           <p>{errorMessage}</p>
         </div>
-      }
+      )}
       <input
         {...props}
         name={name}
         ref={mergeRefs(inputRef, ref)}
-        type='text'
+        type="text"
         readOnly
         hidden
       />

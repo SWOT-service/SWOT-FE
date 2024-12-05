@@ -186,8 +186,8 @@ export default function ClassView() {
           ))}
         </div> */}
         {pastLectures.map((item: LectureViewProps, index: number) => (
-            <ClassList key={item.lectureId} item={item} index={index} />
-          ))}
+          <ClassList key={item.lectureId} item={item} index={index} />
+        ))}
       </div>
       <BottomNav />
     </>
