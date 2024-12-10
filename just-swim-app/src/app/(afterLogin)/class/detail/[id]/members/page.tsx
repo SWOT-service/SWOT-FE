@@ -9,6 +9,7 @@ import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { LectureMembersProps } from '@types';
 import { IconArrowDown, IconArrowRightSmall, IconSearch } from '@assets';
+import NoProfile from '@/_assets/images/no_profile.png';
 
 export default function Members() {
   const params = useParams();
@@ -78,7 +79,6 @@ export default function Members() {
             <button onClick={toggleSortOrder}>
               가나다순{' '}
               <IconArrowDown
-                height="4"
                 fill={sortOrder === 'none' ? 'none' : '#00ff00'}
                 className={styled.icon}
               />
@@ -88,7 +88,7 @@ export default function Members() {
             <li key={item.userId} className={styled.customer}>
               <label className={styled.row} htmlFor={`checkbox-${item.userId}`}>
                 <Image
-                  src={item.profileImage}
+                  src={item.profileImage || NoProfile}
                   alt={`${item.name}의 프로필 이미지`}
                   width={34}
                   height={34}
@@ -99,7 +99,7 @@ export default function Members() {
               </label>
 
               <Link href={`/user/${item.userId}`}>
-                <IconArrowRightSmall height="10" fill="black" />
+                <IconArrowRightSmall fill="black" />
               </Link>
             </li>
           ))}

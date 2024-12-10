@@ -9,6 +9,7 @@ import Image from 'next/image';
 import styled from './classView.module.scss';
 
 import { IconRepeatTime, IconLocation, IconClock, IconSearch } from '@assets';
+import NoProfile from '@/_assets/images/no_profile.png';
 import { LectureViewProps } from '@types';
 
 import React from 'react';
@@ -53,7 +54,7 @@ const ClassList = React.memo(
                         <Image
                           key={index}
                           //  @ts-ignore
-                          src={member.memberProfileImage}
+                          src={member.memberProfileImage || NoProfile}
                           alt="회원 프로필 사진"
                           width={28}
                           height={28}
@@ -156,17 +157,28 @@ export default function ClassView() {
 
       <p className={styled.title}>진행 중인 수업</p>
       <div className={styled.tab_list}>
-        <div className="left_content">
-          {ongoingLectures.map((item: LectureViewProps, index: number) => (
-            <>{index % 2 === 0 && <ClassList item={item} index={index} />}</>
-          ))}
-        </div>
-
-        <div className="right_content">
-          {ongoingLectures.map((item: LectureViewProps, index: number) => (
-            <>{index % 2 !== 0 && <ClassList item={item} index={index} />}</>
-          ))}
-        </div>
+        {ongoingLectures.length > 0 ? (
+          <>
+            <div className="left_content">
+              {ongoingLectures.map(
+                (item, index) =>
+                  index % 2 === 0 && (
+                    <ClassList key={item.lectureId} item={item} index={index} />
+                  ),
+              )}
+            </div>
+            <div className="right_content">
+              {ongoingLectures.map(
+                (item, index) =>
+                  index % 2 !== 0 && (
+                    <ClassList key={item.lectureId} item={item} index={index} />
+                  ),
+              )}
+            </div>
+          </>
+        ) : (
+          <p>No ongoing lectures available.</p>
+        )}
       </div>
 
       <div className={styled.bar}></div>
