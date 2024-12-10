@@ -10,7 +10,8 @@ import * as clipboard from 'clipboard-polyfill';
 import { ClipboardItem } from 'clipboard-polyfill';
 
 import { IconDownload, IconShare, ImageQRCode } from '@assets';
-import { LectureProps, ProfileProps } from '@types';
+import { LectureProps, InstructorProfileProps } from '@types';
+import NoProfile from '@/_assets/images/no_profile.png';
 
 import styled from './styles.module.scss';
 
@@ -19,7 +20,7 @@ export function QRCode({
   instructorData,
 }: {
   lectureData: LectureProps;
-  instructorData: ProfileProps;
+  instructorData: InstructorProfileProps;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -65,7 +66,7 @@ export function QRCode({
       </div>
       <div className={styled.instructor}>
         <Image
-          src={instructorData.profileImage || '/assets/profile1.png'}
+          src={instructorData.image || NoProfile}
           alt={`${instructorData.name}`}
           width={24}
           height={24}

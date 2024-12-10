@@ -16,7 +16,9 @@ import {
   IconLocation,
   IconPhone,
   IconRepeatTime,
+  IconGallery,
 } from '@assets';
+import NoProfile from '@/_assets/images/no_profile.png';
 import { MemberProps } from '@types';
 import Link from 'next/link';
 import dayjs from 'dayjs';
@@ -26,7 +28,7 @@ export default function User() {
 
   const memberId = params.id;
   const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/member/${memberId}`;
-  const AUTHORIZATION_HEADER = `${process.env.NEXT_PUBLIC_TOKEN}`;
+  const AUTHORIZATION_HEADER = `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`;
 
   const [member, setMember] = useState<MemberProps | null>(null);
 
@@ -42,6 +44,7 @@ export default function User() {
         setMember(data.data);
       });
   }, [memberId]);
+  console.log(member);
 
   return (
     <>
@@ -53,7 +56,7 @@ export default function User() {
             <div className={styled.container}>
               <div className={styled.flex}>
                 <Image
-                  src={member.profileImage}
+                  src={member?.profileImage || NoProfile}
                   alt="회원 프로필 사진"
                   width={68}
                   height={68}
@@ -107,8 +110,7 @@ export default function User() {
                               boxShadow: `0px -3px 0 0 ${item.lectureColor}`,
                             }}>
                             <div className={styled.lectureItem}>
-                              <Link
-                                href={`/class/detail/${item.lectureId}`}>
+                              <Link href={`/class/detail/${item.lectureId}`}>
                                 <div className={styled.text_content}>
                                   <p className={styled.name}>
                                     {item.lectureTitle}
@@ -168,8 +170,7 @@ export default function User() {
                               boxShadow: `0px -3px 0 0 ${item.lectureColor}`,
                             }}>
                             <div className={styled.lectureItem}>
-                              <Link
-                                href={`/class/detail/${item.lectureId}`}>
+                              <Link href={`/class/detail/${item.lectureId}`}>
                                 <div className={styled.text_content}>
                                   <p className={styled.name}>
                                     {item.lectureTitle}
@@ -256,7 +257,7 @@ export default function User() {
                         <p className={styled.photo}>
                           <div>
                             <Image
-                              src={item.images[index].imagePath}
+                              src={item.images[index]?.imagePath || IconGallery}
                               alt="피드백 사진"
                               width={76}
                               height={76}
@@ -288,7 +289,7 @@ export default function User() {
 
           <div className={styled.container}>
             <div className={styled.button_box}>
-              <button className={styled.feed_button}>피드벡 남기기</button>
+              <button className={styled.feed_button}>피드백 남기기</button>
             </div>
           </div>
         </>

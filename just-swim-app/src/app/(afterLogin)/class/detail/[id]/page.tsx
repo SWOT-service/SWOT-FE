@@ -15,6 +15,7 @@ import {
 } from '@assets';
 import { Header } from '@components';
 import { LectureViewProps } from '@types';
+import NoProfile from '@/_assets/images/no_profile.png';
 
 import { QRCode } from '@/(afterLogin)/schedule/(general)/add/complete/[id]/_components';
 
@@ -135,15 +136,12 @@ export default function ClassDetail() {
 
   return (
     <div>
-      <Header
-        title="수업 정보"
-        editURL={`/class/edit/${lectureId}`}
-      />
+      <Header title="수업 정보" editURL={`/class/edit/${lectureId}`} />
 
       <div className={styled.qr}>
         <h2>{lecture.lectureTitle}</h2>
-        <div className={styled.desc}>{lecture.lectureTitle}</div>
-        {lecture.instructor && (
+        <div className={styled.desc}>{lecture.lectureContent}</div>
+        {lecture?.instructor && (
           <QRCode
             lectureData={{
               // @ts-ignore
@@ -154,7 +152,7 @@ export default function ClassDetail() {
               // @ts-ignore
               name: lecture.instructor.instructorName,
               // @ts-ignore
-              image: lecture.instructor.instructorProfileImage,
+              image: lecture.instructor.instructorProfileImage || NoProfile,
             }}
             style={{ backgroundColor: '#fff' }}
           />
@@ -179,7 +177,7 @@ export default function ClassDetail() {
                   {lecture.members.slice(-7).map((member, index) => (
                     <Image
                       key={index}
-                      src={member.profileImage || '/assets/profile1.png'}
+                      src={member?.profileImage || NoProfile}
                       alt="회원 프로필 사진"
                       width={32}
                       height={32}
