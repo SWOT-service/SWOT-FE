@@ -41,10 +41,23 @@ export default function User() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setMember(data.data);
+        const filteredFeedback = (data.data.feedback || []).filter(
+          (item: any) => item.feedbackId !== null,
+        );
+
+        const filteredLectures = (data.data.lectures || []).filter(
+          (item: any) => item.lectureId !== null,
+        );
+
+        const normalizedData = {
+          ...data.data,
+          feedback: filteredFeedback,
+          lectures: filteredLectures,
+        };
+
+        setMember(normalizedData);
       });
   }, [memberId]);
-  console.log(member);
 
   return (
     <>
@@ -100,9 +113,9 @@ export default function User() {
               {member.lectures && member.lectures.length > 0 && (
                 <>
                   <div className="left_content">
-                    {member.lectures.map((item, index) => (
-                      <>
-                        {index % 2 === 0 && (
+                    {member.lectures.map(
+                      (item, index) =>
+                        index % 2 === 0 && (
                           <div
                             key={item.lectureId}
                             className={styled.tab_content}
@@ -154,15 +167,15 @@ export default function User() {
                               </Link>
                             </div>
                           </div>
-                        )}
-                      </>
-                    ))}
+                        ),
+                    )}
                   </div>
 
                   <div className="right_content">
-                    {member.lectures.map((item, index) => (
-                      <>
-                        {index % 2 !== 0 && (
+                    {member.lectures.map(
+                      (item) =>
+                        item.lectureId &&
+                        parseInt(item.lectureId, 10) % 2 !== 0 && (
                           <div
                             key={item.lectureId}
                             className={styled.tab_content}
@@ -214,9 +227,8 @@ export default function User() {
                               </Link>
                             </div>
                           </div>
-                        )}
-                      </>
-                    ))}
+                        ),
+                    )}
                   </div>
                 </>
               )}
@@ -232,8 +244,8 @@ export default function User() {
             </p>
             {member.feedback && member.feedback.length > 0 ? (
               <>
-                {member.feedback.map((item, index) => (
-                  <div className={styled.feed_box} key={index}>
+                {member.feedback.map((item) => (
+                  <div className={styled.feed_box} key={item.feedbackId}>
                     <div className={styled.text_flex}>
                       <p className={styled.day}>
                         <span>
@@ -256,15 +268,18 @@ export default function User() {
                       <div>
                         <p className={styled.photo}>
                           <div>
-                            <Image
-                              src={item.images[index]?.imagePath || IconGallery}
-                              alt="피드백 사진"
-                              width={76}
-                              height={76}
-                              style={{
-                                borderRadius: '9px',
-                              }}
-                            />
+                            {item.images.map((image) => (
+                              <Image
+                                key={image.imageId}
+                                src={image.imagePath || IconGallery}
+                                alt="피드백 이미지"
+                                width={76}
+                                height={76}
+                                style={{
+                                  borderRadius: '9px',
+                                }}
+                              />
+                            ))}
                           </div>
                           + {item.images.length}장
                         </p>
@@ -274,10 +289,8 @@ export default function User() {
                       <span>
                         <IconLink width={16} height={16} fill="#3689FF" />
                       </span>
-                      <Link href={`/feedback/feedbackDetail`}>
-                        https://alpha-justswim.netlify.app/feedback/feedbackDetail
-                        {/* 추후 Link 수정 */}
-                      </Link>
+                      <Link
+                        href={`/feedback/feedbackDetail/${item.feedbackId}`}></Link>
                     </div>
                   </div>
                 ))}

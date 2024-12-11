@@ -28,5 +28,6 @@ export interface UserFeedbackProps {
 }
 
 export interface ImageProps {
+  imageId: string;
   imagePath: string;
 }
