@@ -55,15 +55,12 @@ function _SelectClassInput(
         hidden
         {...props}
         name={name}
-        // id={id}
         ref={mergeRefs(inputRef, ref)}
         multiple
         readOnly
       />
       <div className={styled.input_inner_wrapper}>
-        <Link
-          href={'/feedback/search/class'}
-          className={styled.select_user}>
+        <Link href={'/feedback/search/class'} className={styled.select_user}>
           <div className={styled.icon_wrapper}>
             <IconSelectUser width={30} height={30} />
             <div className={styled.add_txt}>추가하기</div>

@@ -12,25 +12,30 @@ export interface LectureBasicProps {
 export interface LectureProps extends LectureBasicProps {
   lectureId: string;
   members?: {
-    memberUserId: string;
-    memberProfileImage: string;
+    userId: string;
+    name: string;
+    profileImage: string;
   }[];
+  instructor: {
+    instructorName: string;
+    instructorProfileImage: string;
+  };
 }
 
 export interface LectureDetailProps extends LectureProps {
   instructor: {
-    instructorName: string,
-    instructorProfileImage: string,
-  }
+    instructorName: string;
+    instructorProfileImage: string;
+  };
 }
 
 export interface LectureViewProps extends LectureBasicProps {
   lectureId: string;
   isPastLecture: boolean;
   members?: {
-    memberUserId: number;
-    memberName: string;
-    profileImage: string;
+    userId: number;
+    name: string;
+    profileImage: string | null;
   }[];
   instructor: {
     instructorName: string;

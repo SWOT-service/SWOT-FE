@@ -295,17 +295,12 @@ export default function ClassDetail() {
           <div className={styled.feedback_bg}>
             <Link
               className={styled.feedback_btn}
-              href={{
-                pathname: `/feedback/create/class`,
-                query: {
-                  id: lectureId,
-                  // @ts-ignore
-                  member: lecture.members
-                    .map((member) => member.memberUserId)
-                    .join(','),
-                },
-              }}
-              as={`/feedback/create/class`}>
+              href="/feedback/create/class"
+              onClick={() => {
+                if (lecture) {
+                  sessionStorage.setItem('lectureData', JSON.stringify(lecture));
+                }
+              }}>
               수강생 전체 피드백 남기기
             </Link>
           </div>

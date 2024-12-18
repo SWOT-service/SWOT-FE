@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 
 import styled from './feedbackWrite.module.scss';
 
@@ -10,7 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { formSchema, FormType } from '@/_schema';
 import { SelectClassInput } from '@/_components/form/input/selectClassInput';
 import { IconCalendar } from '@assets';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { feedbackStore } from '@/_store/feedback';
 import { submitForm } from './action';
 
@@ -25,13 +26,12 @@ interface CustomFormData {
 export default function FeedbackWrite() {
   const { setFeedbackHandler } = feedbackStore();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [lecture, setLecture] = useState<any>('');
 
   useEffect(() => {
-    const param: any = searchParams.getAll('lecture');
-    if (param.length > 0) {
-      setLecture(JSON.parse(param));
+    const storedLecture = sessionStorage.getItem('lectureData');
+    if (storedLecture) {
+      setLecture(JSON.parse(storedLecture));
     }
   }, []);
 
@@ -68,10 +68,6 @@ export default function FeedbackWrite() {
 
     // @ts-ignore
     const formDataObject: CustomFormData = {};
-    // formData.forEach((value, key) => {
-    // @ts-ignore
-    // formDataObject[key] = value;
-    // });
 
     formData.forEach((value, key) => {
       // console.log(value, key);
@@ -164,7 +160,6 @@ export default function FeedbackWrite() {
               <DateInput
                 renderIcon={() => <IconCalendar width={14} height={14} />}
                 placeholder="수업 일자를 선택해주세요"
-                suffix="종료"
                 {...register('date')}
                 // @ts-ignore
                 errors={[errors.date?.message ?? '']}
@@ -209,11 +204,12 @@ export default function FeedbackWrite() {
             </div>
           </div>
         </div>
-        <button className={styled.submit_btn}>전송하기</button>
-
-        {/* <Link href="confirm" className={styled.submit_btn}>
-          전송하기
-        </Link> */}
+        <Link
+          className={styled.submit_btn}
+          href={{ pathname: `/feedback/create/confirm` }}
+          as={`/feedback/create/confirm`}>
+          작성완료
+        </Link>
       </form>
     </>
   );

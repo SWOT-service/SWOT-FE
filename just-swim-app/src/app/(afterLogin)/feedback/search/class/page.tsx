@@ -41,7 +41,7 @@ export default function SearchClass() {
 
   return (
     <>
-      <Header title="회원 선택" />
+      <Header title="수업 선택" />
       <div className={styled.container}>
         <p className={styled.title}>
           피드백을 남길 <br />

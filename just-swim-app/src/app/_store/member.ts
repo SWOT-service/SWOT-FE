@@ -1,4 +1,3 @@
-import { ClassContentCard } from '@components';
 import { getClassList, getMemberList } from '@/_apis/member';
 import { ChangeEvent } from 'react';
 import { create } from 'zustand';
@@ -23,8 +22,15 @@ interface ClassGroup {
   lectureQRCode: string;
   lectureTime: string;
   lectureTitle: string;
-  memberProfileImage: string;
-  memberUserId: string;
+  members: {
+    userId: string;
+    name: string;
+    profileImage: string | null;
+  }[];
+  instructor: {
+    instructorName: string;
+    instructorProfileImage: string | null;
+  };
 }
 
 type State = {
@@ -126,7 +132,19 @@ const searchClassStore = create<State & Action>()(
       userList: [],
       loadUserList: async () => {
         const userList = await getClassList();
-        set({ userList: userList || [] });
+
+        const formattedUserList = userList?.map((classGroup: ClassGroup) => {
+          const lectureTime = classGroup.lectureTime
+            ? classGroup.lectureTime.split('-')
+            : [];
+
+          return {
+            ...classGroup,
+            lectureTime,
+          };
+        });
+
+        set({ userList: formattedUserList || [] });
       },
       checkedList: [],
       selectedList: [],
