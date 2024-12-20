@@ -15,11 +15,8 @@ export async function submitForm(formData: FormData) {
   const result = formSchema.safeParse(data);
 
   if (!result.success) {
-    return result.error.flatten();
+    return { success: false, errors: result.error.flatten() };
   } else {
-    // redirect('confirm');
+    return { success: true };
   }
-  // 관련 작업 수행
-
-  // 이후 redirect와 같은 로직 수행
 }

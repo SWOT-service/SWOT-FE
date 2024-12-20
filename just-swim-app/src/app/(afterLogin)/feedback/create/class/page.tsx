@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
 
 import styled from './feedbackWrite.module.scss';
 
@@ -88,9 +87,15 @@ export default function FeedbackWrite() {
 
     setFeedbackHandler(formDataObject, 'group');
 
-    const errors = await submitForm(formData);
+    const response = await submitForm(formData);
 
-    router.push(`confirmClass`);
+    if (response.success) {
+      router.replace('/feedback/create/confirm');
+    } else {
+      console.log(response.errors);
+    }
+
+    // router.push(`confirmClass`);
   });
 
   // @ts-ignore
@@ -129,7 +134,7 @@ export default function FeedbackWrite() {
   return (
     <>
       <Header title="반별 피드백 작성하기" />
-      <form action={onValid} className={styled.feedback_write}>
+      <form onSubmit={onValid} className={styled.feedback_write}>
         <div className={styled.inner}>
           <div className={styled.select_customer}>
             <div className={styled.title}>
@@ -204,12 +209,12 @@ export default function FeedbackWrite() {
             </div>
           </div>
         </div>
-        <Link
-          className={styled.submit_btn}
-          href={{ pathname: `/feedback/create/confirm` }}
-          as={`/feedback/create/confirm`}>
+        <button
+          type="submit"
+          className={`${styled.submit_btn} ${!isValid ? styled.disabled : ''}`}
+          disabled={!isValid}>
           작성완료
-        </Link>
+        </button>
       </form>
     </>
   );

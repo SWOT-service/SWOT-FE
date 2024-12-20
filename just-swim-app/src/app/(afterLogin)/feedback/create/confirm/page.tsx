@@ -59,7 +59,12 @@ export default function PersonalFeedbackConfirm() {
               ) : (
                 <div>{target[0]?.lectureTitle}</div>
               )}
-              <ProfileCard customers={target} width={20} height={20} count={false} />
+              <ProfileCard
+                customers={target}
+                width={20}
+                height={20}
+                count={false}
+              />
             </div>
           </div>
           <div className={styled.wrap}>
