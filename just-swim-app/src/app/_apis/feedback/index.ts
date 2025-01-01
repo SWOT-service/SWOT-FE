@@ -5,7 +5,7 @@ import { Fetch } from '@utils';
 
 // import { unstable_cache } from 'next/cache';
 
-const URL = `${process.env.NEXT_PUBLIC_DB_HOST}/feedback`;
+const URL = `${process.env.NEXT_PUBLIC_API_URL}/feedback`;
 
 // async function getFeedback() {
 //   const response = await fetch(URL, {
@@ -63,39 +63,39 @@ async function getFeedback(): Promise<FeedbackProps[] | null> {
   });
 
   if (result.success) {
-    // return result.data;
-    return [
-      {
-        "feedbackId": "1",
-        "feedbackDate": "2024.05.22",
-        "feedbackType": "group",
-        "feedbackContent": "회원님! 오늘 자세는 좋았으나 마지막 스퍼트가 부족해 보였어요 호흡하실 때에도 팔 각도를 조정해 주시면...",
-        "lectureTitle": "아침 2반",
-        "feedbackCreatedAt": '2024.08.13',
-        "members": [
-          {
-            "memberUserId": "2",
-            "memberProfileImage": "http://k.kakaocdn.net/dn/d3UHmi/btsH8xClKxG/jGQI0gBeKrlOkneK7KYIbK/img_640x640.jpg",
-            "memberNickname": "홍길동"
-          }
-        ]
-      },
-      {
-        "feedbackId": "2",
-        "feedbackDate": "2024.04.22",
-        "feedbackType": "personal",
-        "feedbackContent": "회원님! 오늘 자세는 좋았으나 마지막 스퍼트가 부족해 보였어요 호흡하실 때에도 팔 각도를 조정해 주시면...",
-        "lectureTitle": "아침 1반",
-        "feedbackCreatedAt": '2024.08.13',
-        "members": [
-          {
-            "memberUserId": "2",
-            "memberProfileImage": "http://k.kakaocdn.net/dn/d3UHmi/btsH8xClKxG/jGQI0gBeKrlOkneK7KYIbK/img_640x640.jpg",
-            "memberNickname": "이홍길"
-          }
-        ]
-      }
-    ];
+    return result.data;
+    // return [
+    //   {
+    //     "feedbackId": "1",
+    //     "feedbackDate": "2024.05.22",
+    //     "feedbackType": "group",
+    //     "feedbackContent": "회원님! 오늘 자세는 좋았으나 마지막 스퍼트가 부족해 보였어요 호흡하실 때에도 팔 각도를 조정해 주시면...",
+    //     "lectureTitle": "아침 2반",
+    //     "feedbackCreatedAt": '2024.08.13',
+    //     "members": [
+    //       {
+    //         "memberUserId": "2",
+    //         "memberProfileImage": "http://k.kakaocdn.net/dn/d3UHmi/btsH8xClKxG/jGQI0gBeKrlOkneK7KYIbK/img_640x640.jpg",
+    //         "memberNickname": "홍길동"
+    //       }
+    //     ]
+    //   },
+    //   {
+    //     "feedbackId": "2",
+    //     "feedbackDate": "2024.04.22",
+    //     "feedbackType": "personal",
+    //     "feedbackContent": "회원님! 오늘 자세는 좋았으나 마지막 스퍼트가 부족해 보였어요 호흡하실 때에도 팔 각도를 조정해 주시면...",
+    //     "lectureTitle": "아침 1반",
+    //     "feedbackCreatedAt": '2024.08.13',
+    //     "members": [
+    //       {
+    //         "memberUserId": "2",
+    //         "memberProfileImage": "http://k.kakaocdn.net/dn/d3UHmi/btsH8xClKxG/jGQI0gBeKrlOkneK7KYIbK/img_640x640.jpg",
+    //         "memberNickname": "이홍길"
+    //       }
+    //     ]
+    //   }
+    // ];
   } else {
     return notFound();
   }

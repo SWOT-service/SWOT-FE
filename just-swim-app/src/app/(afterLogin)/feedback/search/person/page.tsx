@@ -167,6 +167,8 @@ import { Suspense } from "react";
 import { SearchWrapper } from "./search-wrapper";
 
 export default function Test() {
+    console.log("????!!!!?")
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <SearchWrapper />

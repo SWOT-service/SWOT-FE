@@ -8,7 +8,6 @@ const nextConfig = {
       test: /\.svg$/,
       use: ['@svgr/webpack'],
     });
-
     return config;
   },
   images: {
@@ -20,17 +19,17 @@ const nextConfig = {
         pathname: '/dn/**',
       },
       {
-        hostname: "t1.kakaocdn.net"
+        hostname: 't1.kakaocdn.net',
       },
       {
-        hostname: "img1.kakaocdn.net"
+        hostname: 'img1.kakaocdn.net',
       },
       {
-        hostname: "ssl.pstatic.net"
+        hostname: 'ssl.pstatic.net',
       },
       {
-        hostname: "s3.ap-northeast-2.amazonaws.com"
-      }
+        hostname: 's3.ap-northeast-2.amazonaws.com',
+      },
     ],
   },
   // async rewrites() {

@@ -108,7 +108,8 @@ export default function FeedbackWrite() {
     const presignedURLs = await getFeedbackPresignedURL(data.file.map((f: File) => encodeURI(encodeURIComponent(f.name))));
 
     for (let i = 0; i < presignedURLs.length; i++) {
-      const url = presignedURLs[i].presignedUrl;
+        const url = presignedURLs[i].presignedUrl;
+        console.log(url);
       const image = data.file[i];
 
       try {

@@ -38,6 +38,9 @@ import IconPhone from './icon_phone.svg';
 import IconAccountBox from './icon_account_box.svg';
 import IconHistoryEdu from './icon_history_edu.svg';
 import IconArrowDown from './icon_arrow_down.svg';
+import IconDefaultProfile from './icon_default_profile.svg';
+import IconIndividual from './individual.svg';
+import IconGroup from './group.svg';
 
 export {
   IconArrowRight,
@@ -80,4 +83,7 @@ export {
   IconAccountBox,
   IconHistoryEdu,
   IconArrowDown,
+  IconDefaultProfile,
+  IconIndividual,
+  IconGroup,
 };

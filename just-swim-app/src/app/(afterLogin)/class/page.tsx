@@ -99,7 +99,7 @@ export default function ClassView() {
     })
       .then((response) => response.json())
       .then((data) => {
-        const processedLectures = data.data.map(
+        const processedLectures = data.data?.map(
           (lecture: { lectureEndDate: string }) => {
             const lectureEndDate = new Date(
               lecture.lectureEndDate.replace(/\./g, '-'),
@@ -117,13 +117,16 @@ export default function ClassView() {
   }, [API_URL, AUTHORIZATION_HEADER]);
 
   const ongoingLectures = useMemo(() => {
-    return lectures.filter(
-      (lecture) =>
-        !lecture.isPastLecture &&
-        (searchText === '' ||
-          lecture.members?.some((member) =>
-            member.memberName.toLowerCase().includes(searchText.toLowerCase()),
-          )),
+    return (
+      lectures &&
+      lectures.filter(
+        (lecture) =>
+          !lecture.isPastLecture &&
+          (searchText === '' ||
+            lecture.members?.some((member) =>
+              member.memberName.toLowerCase().includes(searchText.toLowerCase()),
+            )),
+      )
     );
   }, [lectures, searchText]);
 

@@ -10,7 +10,7 @@ export interface FeedbackProps {
     instructorName: string;
     instructorProfileImage: string | null;
   }[];
-  feedbackTargetList: Members[];
+  members: Members[];
 }
 
 export interface Members {
