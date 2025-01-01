@@ -7,6 +7,7 @@ import { FeedbackProps } from '@types';
 import { FeedbackCard } from '../feedbackCard';
 
 import { CutomerFeedbackCard } from '@components';
+import { get } from 'http';
 
 // TODO 추후 수정 요망
 // 한 페이지에 몇 개의 아이템을 보여줄지 여부
@@ -26,11 +27,14 @@ export function List({
   token: string;
 }) {
   const { getUserType } = useUserStore();
-  const type = getUserType(token);
+  const [type, setType] = useState<string>('');
   const [page, setPage] = useState<number>(0);
   const [pagination, setPagination] = useState<number>(0);
 
-  console.log('feedback', feedback);
+  useEffect(() => {
+    const type = getUserType(token);
+    setType(type);
+  }, [getUserType, token]);
 
   const maxPage = Math.floor(feedback.length / itemsToShow);
   const maxPagination = Math.floor(maxPage / pagesToShow);

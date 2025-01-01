@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
-import { FeedbackProps } from "@types";
-import { getFeedbackDetail } from "@apis";
-import { COLOR_LIST } from "@data";
+import { FeedbackProps } from '@types';
+import { getFeedbackDetail } from '@apis';
+import { COLOR_LIST } from '@data';
 
 import NoProfile from '@/_assets/images/no_profile.png';
 import Send from '@/_assets/svg/send.svg';
@@ -22,7 +22,7 @@ export function CutomerFeedbackCard({ feedback }: { feedback: FeedbackProps }) {
   const goToFeedbackDetail = (feedbackId: string) => {
     router.push(`feedback/feedbackDetail/${feedbackId}`);
   };
-  
+
   const [feedbackDetail, setFeedbackDetail] = useState(null);
 
   useEffect(() => {
@@ -31,17 +31,18 @@ export function CutomerFeedbackCard({ feedback }: { feedback: FeedbackProps }) {
 
       // @ts-ignore
       setFeedbackDetail(result.feedback[0]);
-    }
+    };
 
     getDetail();
-  }, [feedback.feedbackId]); 
+  }, [feedback.feedbackId]);
 
   return (
     <div
       className={styled.container}
       onClick={() => goToFeedbackDetail(feedback.feedbackId)}
-      style={{ boxShadow: `0 3px 0 0 ${COLOR_LIST[Math.floor(Math.random() * COLOR_LIST.length)].color} inset` }}
-      >
+      style={{
+        boxShadow: `0 3px 0 0 ${COLOR_LIST[Math.floor(Math.random() * COLOR_LIST.length)].color} inset`,
+      }}>
       <div className={styled.header}>
         <p>{feedback.lectureTitle}</p>
         <div className={styled.instructor_info}>
@@ -52,7 +53,9 @@ export function CutomerFeedbackCard({ feedback }: { feedback: FeedbackProps }) {
           <div className={styled.instructor_image}>
             <Image
               // @ts-ignore
-              src={feedbackDetail?.instructor?.instructorProfileImage || NoProfile}
+              src={
+                feedbackDetail?.instructor?.instructorProfileImage || NoProfile
+              }
               // @ts-ignore
               alt={`${feedbackDetail?.instructor?.instructorName}`}
               width={20}
@@ -68,23 +71,23 @@ export function CutomerFeedbackCard({ feedback }: { feedback: FeedbackProps }) {
           </div>
           {
             // @ts-ignore
-            feedbackDetail?.images[0]?.imagePath &&
-            <div className={styled.feedback_image}>
-              <Image
-                // @ts-ignore
-                src={feedbackDetail?.images[0]?.imagePath}
-                // @ts-ignore
-                alt={`feedback image`}
-                width={52}
-                height={52}
-              />
-            </div>
+            feedbackDetail?.images[0]?.imagePath && (
+              <div className={styled.feedback_image}>
+                <Image
+                  // @ts-ignore
+                  src={feedbackDetail?.images[0]?.imagePath}
+                  // @ts-ignore
+                  alt={`feedback image`}
+                  width={52}
+                  height={52}
+                />
+              </div>
+            )
           }
         </div>
       </div>
       <div className={styled.extra}>
-        {
-          feedback.feedbackType === 'personal' ?
+        {feedback.feedbackType === 'personal' ? (
           <div className={styled.extra_container}>
             <div className={styled.type}>
               <Person />
@@ -95,19 +98,20 @@ export function CutomerFeedbackCard({ feedback }: { feedback: FeedbackProps }) {
               <Send />
               <p>{feedback.feedbackCreatedAt} 전송됨</p>
             </div>
-          </div> :
-          <div className={styled.extra_container}>
-          <div className={styled.date}>
-            <Calendar />
-            <p>{feedback.feedbackCreatedAt} 수업</p>
           </div>
+        ) : (
+          <div className={styled.extra_container}>
+            <div className={styled.date}>
+              <Calendar />
+              <p>{feedback.feedbackCreatedAt} 수업</p>
+            </div>
             <div className={styled.divider} />
             <div className={styled.type}>
               <Profile />
               <p>단체 메시지</p>
             </div>
           </div>
-        }
+        )}
       </div>
     </div>
   );
