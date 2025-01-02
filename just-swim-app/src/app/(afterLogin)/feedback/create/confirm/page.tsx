@@ -18,24 +18,33 @@ export default function PersonalFeedbackConfirm() {
   const [checked, setChecked] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // console.log('formDataState', formDataState);
 
     // @ts-ignore
-    const userIds = target.map((el) => Number(el.userId));
-    const lectureId = Number(selectedList[0].lectureId);
-    const target_users = [
-      {
-        userIds,
+    const target_users = target.map((lecture) => {
+      const userIds = lecture.members.map((member: any) =>
+        Number(member.userId),
+      );
+      const lectureId = Number(lecture.lectureId);
+
+      return {
         lectureId,
-      },
-    ];
+        userIds,
+      };
+    });
 
-    postFeedback(formDataState, formDataState.type, target_users);
+    const response = await postFeedback(
+      formDataState,
+      formDataState.type,
+      target_users,
+    );
 
-    reset();
-
-    router.push('/feedback');
+    if (response.success) {
+      router.push('/feedback');
+    } else {
+      console.log(response);
+    }
   };
 
   return (

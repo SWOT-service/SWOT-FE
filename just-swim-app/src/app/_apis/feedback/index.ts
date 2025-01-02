@@ -27,24 +27,13 @@ async function postFeedback(data, type, target) {
     feedbackTarget: target,
   };
 
-  let formData = new FormData();
-
-  formData.append('feedbackDto', JSON.stringify(value));
-
-  if (data.file) {
-    Array.from(data.file).forEach((el, i) => {
-      // console.log(el);
-      // @ts-ignore
-      formData.append('files', el);
-    });
-  }
-
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/feedback`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+      'Content-Type': 'application/json',
     },
-    body: formData,
+    body: JSON.stringify(value),
   });
 
   const json = await response.json();
@@ -64,38 +53,6 @@ async function getFeedback(): Promise<FeedbackProps[] | null> {
 
   if (result.success) {
     return result.data;
-    // return [
-    //   {
-    //     "feedbackId": "1",
-    //     "feedbackDate": "2024.05.22",
-    //     "feedbackType": "group",
-    //     "feedbackContent": "회원님! 오늘 자세는 좋았으나 마지막 스퍼트가 부족해 보였어요 호흡하실 때에도 팔 각도를 조정해 주시면...",
-    //     "lectureTitle": "아침 2반",
-    //     "feedbackCreatedAt": '2024.08.13',
-    //     "members": [
-    //       {
-    //         "memberUserId": "2",
-    //         "memberProfileImage": "http://k.kakaocdn.net/dn/d3UHmi/btsH8xClKxG/jGQI0gBeKrlOkneK7KYIbK/img_640x640.jpg",
-    //         "memberNickname": "홍길동"
-    //       }
-    //     ]
-    //   },
-    //   {
-    //     "feedbackId": "2",
-    //     "feedbackDate": "2024.04.22",
-    //     "feedbackType": "personal",
-    //     "feedbackContent": "회원님! 오늘 자세는 좋았으나 마지막 스퍼트가 부족해 보였어요 호흡하실 때에도 팔 각도를 조정해 주시면...",
-    //     "lectureTitle": "아침 1반",
-    //     "feedbackCreatedAt": '2024.08.13',
-    //     "members": [
-    //       {
-    //         "memberUserId": "2",
-    //         "memberProfileImage": "http://k.kakaocdn.net/dn/d3UHmi/btsH8xClKxG/jGQI0gBeKrlOkneK7KYIbK/img_640x640.jpg",
-    //         "memberNickname": "이홍길"
-    //       }
-    //     ]
-    //   }
-    // ];
   } else {
     return notFound();
   }
@@ -160,39 +117,42 @@ async function getFeedbackDetail(id: string): Promise<FeedbackProps[] | null> {
 
   return {
     // @ts-ignore
-    "feedback": [
+    feedback: [
       {
-        "feedbackId": "18",
-        "feedbackType": "group",
-        "feedbackDate": "2024.04.22",
-        "feedbackContent": "회원님! 오늘 자세는 좋았으나 마지막 스퍼트가 부족해 보였어요 호흡하실 때에도 팔 각도를 조정해 주시면...",
-        "feedbackLink": "URL",
-        "instructor": {
-          "instructorUserId": "1",
-          "instructorName": "김수영",
-          "instructorProfileImage": "http://t1.kakaocdn.net/account_images/default_profile.jpeg.twg.thumb.R640x640"
+        feedbackId: '18',
+        feedbackType: 'group',
+        feedbackDate: '2024.04.22',
+        feedbackContent:
+          '회원님! 오늘 자세는 좋았으나 마지막 스퍼트가 부족해 보였어요 호흡하실 때에도 팔 각도를 조정해 주시면...',
+        feedbackLink: 'URL',
+        instructor: {
+          instructorUserId: '1',
+          instructorName: '김수영',
+          instructorProfileImage:
+            'http://t1.kakaocdn.net/account_images/default_profile.jpeg.twg.thumb.R640x640',
         },
-        "images": [
+        images: [
           {
-            "imagePath": "https://s3.ap-northeast-2.amazonaws.com/just-swim-bucket/feedback/1/1718800708147-6.png"
-          }
-        ]
-      }
+            imagePath:
+              'https://s3.ap-northeast-2.amazonaws.com/just-swim-bucket/feedback/1/1718800708147-6.png',
+          },
+        ],
+      },
     ],
-    "feedbackTargetList": [
+    feedbackTargetList: [
       {
-        "lectureTitle": "asdf",
-        "memberUserId": "2",
-        "memberNickname": "홍길동",
-        "memberProfileImage": "asdf"
+        lectureTitle: 'asdf',
+        memberUserId: '2',
+        memberNickname: '홍길동',
+        memberProfileImage: 'asdf',
       },
       {
-        "lectureTitle": "asdf",
-        "memberUserId": "3",
-        "memberNickname": "홍길순",
-        "memberProfileImage": "asdf"
-      }
-    ]
+        lectureTitle: 'asdf',
+        memberUserId: '3',
+        memberNickname: '홍길순',
+        memberProfileImage: 'asdf',
+      },
+    ],
   };
 }
 

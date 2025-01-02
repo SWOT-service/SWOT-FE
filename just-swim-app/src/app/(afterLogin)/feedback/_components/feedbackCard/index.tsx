@@ -16,7 +16,6 @@ export function FeedbackCard({ feedback }: { feedback: FeedbackProps }) {
   const selectedMember = feedback.members?.[0] ?? null;
   const router = useRouter();
 
-  console.log('selectedMember', selectedMember);
   const goToFeedbackDetail = (feedbackId: string) => {
     if (feedbackId) {
       router.push(`/feedback/feedbackDetail/${feedbackId}`);
