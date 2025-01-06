@@ -99,61 +99,21 @@ async function getSortedFeedback(): Promise<FeedbackProps[] | null> {
 
 // 피드백 상세
 async function getFeedbackDetail(id: string): Promise<FeedbackProps[] | null> {
-  // const result = await Fetch<{ success: boolean; data: FeedbackProps[] }>({
-  //   url: `${process.env.NEXT_PUBLIC_API_URL}/feedback/${id}`,
-  //   header: {
-  //     token: true,
-  //     json: true,
-  //     credential: true,
-  //   },
-  // });
+  const result = await Fetch<{ success: boolean; data: FeedbackProps[] }>({
+    url: `${process.env.NEXT_PUBLIC_API_URL}/feedback/${id}`,
+    header: {
+      token: true,
+      json: true,
+      credential: true,
+    },
+  });
 
-  // if (result.success) {
-  //   return result.data;
-  //   return result.data;
-  // } else {
-  //   return notFound();
-  // }
-
-  return {
-    // @ts-ignore
-    feedback: [
-      {
-        feedbackId: '18',
-        feedbackType: 'group',
-        feedbackDate: '2024.04.22',
-        feedbackContent:
-          '회원님! 오늘 자세는 좋았으나 마지막 스퍼트가 부족해 보였어요 호흡하실 때에도 팔 각도를 조정해 주시면...',
-        feedbackLink: 'URL',
-        instructor: {
-          instructorUserId: '1',
-          instructorName: '김수영',
-          instructorProfileImage:
-            'http://t1.kakaocdn.net/account_images/default_profile.jpeg.twg.thumb.R640x640',
-        },
-        images: [
-          {
-            imagePath:
-              'https://s3.ap-northeast-2.amazonaws.com/just-swim-bucket/feedback/1/1718800708147-6.png',
-          },
-        ],
-      },
-    ],
-    feedbackTargetList: [
-      {
-        lectureTitle: 'asdf',
-        memberUserId: '2',
-        memberNickname: '홍길동',
-        memberProfileImage: 'asdf',
-      },
-      {
-        lectureTitle: 'asdf',
-        memberUserId: '3',
-        memberNickname: '홍길순',
-        memberProfileImage: 'asdf',
-      },
-    ],
-  };
+  if (result.success) {
+    return result.data;
+    return result.data;
+  } else {
+    return notFound();
+  }
 }
 
 export { getFeedback, postFeedback, getSortedFeedback, getFeedbackDetail };

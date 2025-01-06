@@ -6,15 +6,15 @@ import Send from '@assets/send.svg';
 import Calendar from '@assets/calendar.svg';
 import UserTypeIndividual from '@assets/user_type_individual.svg';
 
-import { FileInput, HistoryBackHeader } from '@components';
-import { useSearchParams } from 'next/navigation';
+import { HistoryBackHeader } from '@components';
 import { useEffect, useState } from 'react';
 import { getFeedbackDetail } from '@apis';
-import { FeedbackIndo, FeedbackProps } from '@/_types/typeFeedback';
+import { FeedbackInfo } from '@/_types/typeFeedback';
 
 export default function FeedbackDetail(id: any) {
-  const [feedbackInfo, setFeedbackInfo] = useState<FeedbackIndo | []>([]);
+  const [feedbackInfo, setFeedbackInfo] = useState<FeedbackInfo>();
   const [feedbackTarget, setFeedbackTarget] = useState([]);
+  const [feedbackCreatedAt, setFeedbackCreatedAt] = useState<string>('');
   const feedbackId = id.params.id;
 
   useEffect(() => {
@@ -23,6 +23,11 @@ export default function FeedbackDetail(id: any) {
         const data: any = await getFeedbackDetail(feedbackId);
         setFeedbackInfo(data?.feedback[0]);
         setFeedbackTarget(data?.feedbackTargetList);
+        const formattedDate = new Date(data?.feedback[0]?.feedbackCreatedAt)
+          .toISOString()
+          .slice(0, 10)
+          .replace(/-/g, '.');
+        setFeedbackCreatedAt(formattedDate);
       } catch {}
     };
     fetchData();
@@ -30,13 +35,17 @@ export default function FeedbackDetail(id: any) {
 
   return (
     <>
-      <HistoryBackHeader title='피드백 기록 보기' additionalLink='/' additionalContent='수정하기' />
+      <HistoryBackHeader
+        title="피드백 기록 보기"
+        additionalLink="/"
+        additionalContent="수정하기"
+      />
       <div className={styled.detail_container}>
         <div className={styled.feedback_date}>
           <span className={styled.icon}>
             <Send />
           </span>
-          <p>{'2024.09.09'} 전송된 피드백</p>
+          <p>{feedbackCreatedAt} 전송된 피드백</p>
         </div>
         <div className={styled.detail_title}>
           <p>피드백 기준일</p>
@@ -46,7 +55,7 @@ export default function FeedbackDetail(id: any) {
             <Calendar />
           </span>
           {/* @ts-ignore */}
-          <p>{feedbackInfo.feedbackDate}</p>
+          <p>{feedbackInfo?.feedbackDate}</p>
         </div>
         <div className={styled.detail_title}>
           <p>피드백 대상</p>
@@ -65,14 +74,13 @@ export default function FeedbackDetail(id: any) {
           </p>
         </div>
         {/* @ts-ignore */}
-        {feedbackInfo.images?.length > 0 ? (
+        {feedbackInfo?.images?.length > 0 ? (
           <>
             <div className={styled.detail_title}>
               <p>첨부 파일</p>
             </div>
             <div className={styled.detail_photo}>
-              {/* @ts-ignore */}
-              {(feedbackInfo.images || []).map((image, index) => {
+              {(feedbackInfo?.images || []).map((image, index) => {
                 return (
                   <div
                     key={index}
@@ -85,8 +93,8 @@ export default function FeedbackDetail(id: any) {
                     }}></div>
                 );
               })}
-              {/* <div className={styled.photo}></div>
-              <div className={styled.photo}></div> */}
+              <div className={styled.photo}></div>
+              <div className={styled.photo}></div>
             </div>
           </>
         ) : (
@@ -97,14 +105,13 @@ export default function FeedbackDetail(id: any) {
           <p>첨부 링크</p>
         </div>
         <div className={styled.detail_content}>
-          <p>https://github.com/Just-Swim-service</p>
+          <p>{feedbackInfo?.feedbackLink}</p>
         </div>
         <div className={styled.detail_title}>
           <p>피드백</p>
         </div>
         <div className={styled.detail_content}>
-          {/* @ts-ignore */}
-          <p>{feedbackInfo.feedbackContent}</p>
+          <p>{feedbackInfo?.feedbackContent}</p>
         </div>
       </div>
     </>

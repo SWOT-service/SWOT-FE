@@ -22,12 +22,14 @@ export interface Members {
   // 현재 null로 넘어오기 때문에 확인 요망
 }
 
-export interface FeedbackIndo {
-  feedbackContetn: string;
+export interface FeedbackInfo {
+  feedbackContent: string;
   feedbackDate: string;
   feedbackId: string;
   feedbackType: string;
-  images: [];
+  feedbackCreatedAt: string;
+  feedbackLink: string;
+  images: [{ imagePath: string }];
   instructor: {
     instructorName: string;
     instructorProfileImage: string;
