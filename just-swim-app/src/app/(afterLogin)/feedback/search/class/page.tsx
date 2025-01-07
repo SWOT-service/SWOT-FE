@@ -43,7 +43,7 @@ export default function SearchClass() {
       <Header title="수업 선택" />
       <div className={styled.container}>
         <p className={styled.title}>
-          피드백을 남길 <br />
+          전체 피드백을 남길 <br />
           수업을 선택해주세요
         </p>
         <div className={styled.search_class}>
