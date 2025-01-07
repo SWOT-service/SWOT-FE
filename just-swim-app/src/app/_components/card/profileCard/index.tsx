@@ -9,6 +9,7 @@ interface Props {
   xMargin?: number;
   count?: boolean;
 }
+
 export function ProfileCard({
   customers,
   width,

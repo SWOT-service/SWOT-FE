@@ -19,8 +19,6 @@ export function FeedbackCard({ feedback }: { feedback: FeedbackProps }) {
   const goToFeedbackDetail = (feedbackId: string) => {
     if (feedbackId) {
       router.push(`/feedback/feedbackDetail/${feedbackId}`);
-    } else {
-      console.error('Feedback ID is missing');
     }
   };
 

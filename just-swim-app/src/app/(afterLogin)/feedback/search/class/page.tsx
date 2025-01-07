@@ -10,7 +10,6 @@ import Check from '@assets/check.svg';
 import Clear from '@assets/clear.svg';
 
 import { Header } from '@components';
-import { randomId } from '@utils';
 import { searchClassStore } from '@store';
 import { useRouter } from 'next/navigation';
 

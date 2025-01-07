@@ -20,7 +20,6 @@ export default function ClassFeedbackConfirm() {
   const router = useRouter();
 
   const handleSubmit = () => {
-
     // @ts-ignore
     const userIds = (target[0]?.members || []).map((el) => Number(el.userId));
     const lectureId = Number(target[0].lectureId);
