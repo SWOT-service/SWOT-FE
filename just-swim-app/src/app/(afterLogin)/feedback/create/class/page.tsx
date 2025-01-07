@@ -13,6 +13,7 @@ import { IconCalendar } from '@assets';
 import { useRouter } from 'next/navigation';
 import { feedbackStore } from '@/_store/feedback';
 import { submitForm } from './action';
+import { getClassList } from '@apis';
 
 interface CustomFormData {
   date: string;
@@ -25,13 +26,17 @@ interface CustomFormData {
 export default function FeedbackWrite() {
   const { setFeedbackHandler } = feedbackStore();
   const router = useRouter();
-  const [lecture, setLecture] = useState<any>('');
+  const [lecture, setLecture] = useState<any>();
 
   useEffect(() => {
-    const storedLecture = sessionStorage.getItem('lectureData');
-    if (storedLecture) {
-      setLecture(JSON.parse(storedLecture));
-    }
+    const getLecturesData = async () => {
+      const data = await getClassList();
+      if (data.data) {
+        const lectureTime = data.lectureTime ? data.lectureTime.split('-') : [];
+        setLecture({ ...data.data, lectureTime });
+      }
+    };
+    getLecturesData();
   }, []);
 
   const {
@@ -138,16 +143,14 @@ export default function FeedbackWrite() {
         <div className={styled.inner}>
           <div className={styled.select_customer}>
             <div className={styled.title}>
-              수강생 선택하기 <span>(필수)</span>
+              수업 선택하기 <span>(필수)</span>
             </div>
             <div className={styled.sub_title}>
               피드백을 남길 수업의 정보를 확인해주세요
             </div>
-
             <SelectClassInput
               {...register('target')}
               lecture={lecture}
-              // @ts-ignore
               setValue={setValue}
               errors={[errors.target?.message ?? '']}
             />

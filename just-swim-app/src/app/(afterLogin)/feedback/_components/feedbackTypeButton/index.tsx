@@ -6,16 +6,19 @@ import { useRouter } from 'next/navigation';
 import { useUserStore } from '@store';
 
 import styled from './feedbackTypeButton.module.scss';
+import { getMyProfile } from '@apis';
 
 export function FeedbackTypeButton({ token }: { token: string }) {
   const router = useRouter();
-  const { getUserType } = useUserStore();
   const [userType, setUserType] = useState<string | null>(null);
 
   useEffect(() => {
-    const type = getUserType(token);
-    setUserType(type);
-  }, [token, getUserType]);
+    const getUserType = async () => {
+      const type = (await getMyProfile()).data.data.userType;
+      setUserType(type);
+    };
+    getUserType();
+  }, [token]);
 
   const handleIndividualClick = (feedbackType: string) => {
     router.push(`feedback/create/${feedbackType}`);

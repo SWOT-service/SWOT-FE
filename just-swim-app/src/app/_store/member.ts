@@ -132,17 +132,18 @@ const searchClassStore = create<State & Action>()(
       userList: [],
       loadUserList: async () => {
         const userList = await getClassList();
+        const formattedUserList = userList?.data.data.map(
+          (classGroup: ClassGroup) => {
+            const lectureTime = classGroup.lectureTime
+              ? classGroup.lectureTime.split('-')
+              : [];
 
-        const formattedUserList = userList?.map((classGroup: ClassGroup) => {
-          const lectureTime = classGroup.lectureTime
-            ? classGroup.lectureTime.split('-')
-            : [];
-
-          return {
-            ...classGroup,
-            lectureTime,
-          };
-        });
+            return {
+              ...classGroup,
+              lectureTime,
+            };
+          },
+        );
 
         set({ userList: formattedUserList || [] });
       },
