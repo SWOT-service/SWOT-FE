@@ -9,20 +9,23 @@ import UserTypeIndividual from '@assets/user_type_individual.svg';
 import { HistoryBackHeader } from '@components';
 import { useEffect, useState } from 'react';
 import { getFeedbackDetail } from '@apis';
-import { FeedbackInfo } from '@/_types/typeFeedback';
+import { FeedbackInfo, Members } from '@/_types/typeFeedback';
+import { useParams } from 'next/navigation';
 
-export default function FeedbackDetail(id: any) {
+export default function FeedbackDetail() {
+  const { id } = useParams();
+
   const [feedbackInfo, setFeedbackInfo] = useState<FeedbackInfo>();
-  const [feedbackTarget, setFeedbackTarget] = useState([]);
+  const [feedbackTarget, setFeedbackTarget] = useState<Members[]>([]);
   const [feedbackCreatedAt, setFeedbackCreatedAt] = useState<string>('');
-  const feedbackId = id.params.id;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data: any = await getFeedbackDetail(feedbackId);
+        const data: any = await getFeedbackDetail(id as string);
         setFeedbackInfo(data?.feedback[0]);
         setFeedbackTarget(data?.feedbackTargetList);
+
         const formattedDate = new Date(data?.feedback[0]?.feedbackCreatedAt)
           .toISOString()
           .slice(0, 10)
@@ -31,7 +34,7 @@ export default function FeedbackDetail(id: any) {
       } catch {}
     };
     fetchData();
-  }, []);
+  }, [id]);
 
   return (
     <>
@@ -54,7 +57,6 @@ export default function FeedbackDetail(id: any) {
           <span className={styled.detail_icon}>
             <Calendar />
           </span>
-          {/* @ts-ignore */}
           <p>{feedbackInfo?.feedbackDate}</p>
         </div>
         <div className={styled.detail_title}>
@@ -64,49 +66,49 @@ export default function FeedbackDetail(id: any) {
           <span className={styled.detail_icon}>
             <UserTypeIndividual />
           </span>
-          {/* <p>User 1122 님</p> */}
+          {/* TODO: 대상이 여러명일 때 클릭하면 리스트 보이도록 하기 */}
           <p>
-            {feedbackTarget.length > 0
-              ? // @ts-ignore
-                `${feedbackTarget[0]?.memberNickname} 외 ${feedbackTarget.length} 명`
-              : // @ts-ignore
-                `${feedbackTarget[0]?.memberNickname}`}
+            {feedbackTarget.length > 1
+              ? `${feedbackTarget[0]?.memberNickname} 외 ${feedbackTarget.length} 명`
+              : `${feedbackTarget[0]?.memberNickname}`}
           </p>
         </div>
-        {/* @ts-ignore */}
-        {feedbackInfo?.images?.length > 0 ? (
-          <>
+        <div>
+          {feedbackInfo?.images && feedbackInfo.images.length > 0 && (
             <div className={styled.detail_title}>
               <p>첨부 파일</p>
+              <div className={styled.detail_photo}>
+                {/* TODO: 이미지 클릭 시 확대 처리 */}
+                {(feedbackInfo?.images || []).map((image, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className={styled.preview_item}
+                      style={{
+                        backgroundImage: `url(${image.imagePath})`,
+                        width: '100px',
+                        height: '100px',
+                        backgroundSize: 'cover',
+                      }}></div>
+                  );
+                })}
+                <div className={styled.photo}></div>
+                <div className={styled.photo}></div>
+              </div>
             </div>
-            <div className={styled.detail_photo}>
-              {(feedbackInfo?.images || []).map((image, index) => {
-                return (
-                  <div
-                    key={index}
-                    className={styled.preview_item}
-                    style={{
-                      backgroundImage: `url(${image.imagePath})`,
-                      width: '100px',
-                      height: '100px',
-                      backgroundSize: 'cover',
-                    }}></div>
-                );
-              })}
-              <div className={styled.photo}></div>
-              <div className={styled.photo}></div>
+          )}
+        </div>
+        {feedbackInfo?.feedbackLink && (
+          <div>
+            <div className={styled.detail_title}>
+              <p>첨부 링크</p>
             </div>
-          </>
-        ) : (
-          ''
+            <div className={styled.detail_content}>
+              {/* TODO: 이미지 넣기 */}
+              <p>{feedbackInfo?.feedbackLink}</p>
+            </div>
+          </div>
         )}
-        {}
-        <div className={styled.detail_title}>
-          <p>첨부 링크</p>
-        </div>
-        <div className={styled.detail_content}>
-          <p>{feedbackInfo?.feedbackLink}</p>
-        </div>
         <div className={styled.detail_title}>
           <p>피드백</p>
         </div>
