@@ -19,10 +19,15 @@ import Link from 'next/link';
 import { IconSelectUser } from '@assets';
 import { searchClassStore } from '@store';
 import { ProfileCard } from '@components';
+import { UseFormSetValue } from 'react-hook-form';
+
+interface SelectClassInputProps extends SelectPersonInputProps {
+  setValue: UseFormSetValue<any>;
+  errors: string[];
+}
 
 function _SelectClassInput(
-  // @ts-ignore
-  { name, setValue, lecture, ...props }: SelectPersonInputProps,
+  { name, setValue, lecture, ...props }: SelectClassInputProps,
   ref: ForwardedRef<HTMLInputElement>,
 ) {
   const {
@@ -38,7 +43,7 @@ function _SelectClassInput(
     /* @ts-ignore */
     lecture?.lectureId && updateSelectedList([lecture]);
     lecture?.lectureId && updateCheckList([lecture]);
-  }, [lecture]);
+  }, [lecture, updateSelectedList, updateCheckList]);
 
   useEffect(() => {
     const value = selectedList.length > 0 ? JSON.stringify(selectedList) : '';
@@ -70,7 +75,7 @@ function _SelectClassInput(
       <div className={styled.preview_wrapper}>
         {selectedList.map((preview, index) => {
           return (
-            <div key={randomId()} className={styled.preview_item}>
+            <div key={index} className={styled.preview_item}>
               <div className={styled.tag}>전체</div>
               <div className={styled.title}>{preview.lectureTitle}</div>
               <ProfileCard
