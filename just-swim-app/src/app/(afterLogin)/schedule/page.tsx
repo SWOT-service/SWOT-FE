@@ -1,5 +1,6 @@
 'use client';
 
+import { getMyProfile } from '@apis';
 import { useUserStore } from '@store';
 import { getTokenInCookies, setTokenInCookies } from '@utils';
 import { redirect, useSearchParams, useRouter } from 'next/navigation';
@@ -10,7 +11,7 @@ export default function Schedule() {
   const [token, setToken] = useState<string>();
   const router = useRouter();
 
-  const { setAddUserToken } = useUserStore();
+  const { setAddUserToken, setAddUserProfile } = useUserStore();
 
   useEffect(() => {
     const checkCookies = async () => {
@@ -31,11 +32,15 @@ export default function Schedule() {
       if (params) {
         const newToken = await setTokenInCookies(params);
         setAddUserToken(newToken);
+
+        const { data } = await getMyProfile();
+        setAddUserProfile({ token: newToken, profile: data.data });
         setToken(newToken);
       }
     };
     checkToken();
-  }, [params, setAddUserToken]);
+  }, [params, setAddUserProfile]);
+
   useLayoutEffect(() => {
     if (token) {
       redirect('/schedule/weekly');
