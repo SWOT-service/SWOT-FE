@@ -7,14 +7,14 @@
   gap: 10px;
   padding: 0 16px;
 
-  button {
+  .button_person {
     display: flex;
     flex-direction: column;
 
     flex: 1;
     height: 152px;
-    background-color: $--gray-100;
-    border: 1px solid $--gray-200;
+    background-color: #f3f8ff;
+    border: 1px solid #dcebff;
     border-radius: 10px;
     text-align: left;
     padding: 15px;
@@ -23,6 +23,8 @@
       @include Title3-M;
 
       margin-top: auto;
+
+      color: #3689ff;
 
       span {
         @include Title2-SB;
@@ -34,7 +36,40 @@
 
       margin-top: 6px;
 
-      color: $--gray-600;
+      color: $--gray-700;
+    }
+  }
+
+  .button_class {
+    display: flex;
+    flex-direction: column;
+
+    flex: 1;
+    height: 152px;
+    background-color: #f1fdfd;
+    border: 1px solid #d8f7fa;
+    border-radius: 10px;
+    text-align: left;
+    padding: 15px;
+
+    .button_title {
+      @include Title3-M;
+
+      margin-top: auto;
+
+      color: #04c9d6;
+
+      span {
+        @include Title2-SB;
+      }
+    }
+
+    .button_desc {
+      @include Body3-R;
+
+      margin-top: 6px;
+
+      color: $--gray-700;
     }
   }
 }
