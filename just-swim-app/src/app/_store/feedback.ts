@@ -10,27 +10,28 @@ interface FeedbackFormData {
   content: string;
 }
 
+// TODO: 타입 정의
 interface FeedbackStoreState {
   formData: FeedbackFormData;
   setFeedbackFormData: (formData: FeedbackFormData) => void;
   resetFeedbackFormData: () => void;
+  getFeedbackFormData: () => FeedbackFormData;
 }
+
+const initialFormData: FeedbackFormData = {
+  date: '',
+  files: null,
+  targets: [],
+  link: null,
+  content: '',
+};
 
 const feedbackStore = create<any>()(
   persist(
-    (set) => ({
-      formDataState: {
-        date: '',
-        link: '',
-        content: '',
-        file: '',
-        fileURL: '',
-        target: '',
-      },
+    (set, get) => ({
       // @ts-ignore
-      setFeedbackHandler: (form, targetType: string) =>
-        set((state: any) => {
-          console.log(form);
+      setFeedbackFormData: (form, targetType) =>
+        set(() => {
           return {
             formDataState: {
               date: form.date,
@@ -43,6 +44,13 @@ const feedbackStore = create<any>()(
             },
           };
         }),
+      resetFeedbackFormData: () =>
+        set(() => {
+          return {
+            formDataState: initialFormData,
+          };
+        }),
+      getFeedbackFormData: () => get().formDataState,
     }),
     {
       name: 'formDataState',

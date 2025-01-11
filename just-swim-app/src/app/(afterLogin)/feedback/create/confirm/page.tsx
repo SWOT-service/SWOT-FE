@@ -11,8 +11,10 @@ import { useRouter } from 'next/navigation';
 
 export default function PersonalFeedbackConfirm() {
   // @ts-ignore
-  const { selectedList, reset } = searchUserStore();
-  const { formDataState } = feedbackStore();
+  const { resetMemberData } = searchUserStore();
+  const { getFeedbackFormData } = feedbackStore();
+  const formDataState = getFeedbackFormData();
+  console.log('formDataState', formDataState);
   //   const target = JSON.parse(formDataState.target);
   const target = JSON.parse(formDataState.target || '[]');
   const [checked, setChecked] = useState(false);
@@ -41,10 +43,15 @@ export default function PersonalFeedbackConfirm() {
     );
 
     if (response.success) {
+      resetMemberData();
       router.push('/feedback');
     } else {
       console.log(response);
     }
+  };
+
+  const handleBack = () => {
+    router.back();
   };
 
   return (
@@ -138,7 +145,9 @@ export default function PersonalFeedbackConfirm() {
       </div>
 
       <div className={styled.btn_wrap}>
-        <button className={styled.back_btn}>돌아가기</button>
+        <button onClick={handleBack} className={styled.back_btn}>
+          돌아가기
+        </button>
         <button
           className={styled.submit_btn}
           disabled={!checked}

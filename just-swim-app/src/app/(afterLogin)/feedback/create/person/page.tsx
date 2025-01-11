@@ -44,7 +44,7 @@ interface CustomFormData {
 
 ///////////////////////////
 export default function FeedbackWrite() {
-  const { setFeedbackHandler } = feedbackStore();
+  const { setFeedbackFormData } = feedbackStore();
   const router = useRouter();
 
   // test
@@ -59,7 +59,7 @@ export default function FeedbackWrite() {
     mode: 'onChange',
   });
 
-  const [feedbackFormData, setFeedbackFormData] = useState('');
+  //   const [feedbackFormData, setFeedbackFormData] = useState('');
   const [images, setImages] = useState<File[]>([]);
 
   // handleSubmit에는 RHF에서 validate된 데이터가 들어간다
@@ -103,13 +103,15 @@ export default function FeedbackWrite() {
       }
     });
 
-    setFeedbackHandler(formDataObject, 'personal');
+    setFeedbackFormData(formDataObject, 'personal');
 
-    const presignedURLs = await getFeedbackPresignedURL(data.file.map((f: File) => encodeURI(encodeURIComponent(f.name))));
+    const presignedURLs = await getFeedbackPresignedURL(
+      data.file.map((f: File) => encodeURI(encodeURIComponent(f.name))),
+    );
 
     for (let i = 0; i < presignedURLs.length; i++) {
-        const url = presignedURLs[i].presignedUrl;
-        console.log(url);
+      const url = presignedURLs[i].presignedUrl;
+      console.log(url);
       const image = data.file[i];
 
       try {
@@ -123,16 +125,15 @@ export default function FeedbackWrite() {
         });
 
         console.log(response);
-        
-  
+
         const result = await response.json();
 
         console.log(result);
       } catch (error) {
         console.log(error);
-      } 
+      }
     }
-    
+
     // const errors = await submitForm(formData);
 
     // router.push(`confirm`);

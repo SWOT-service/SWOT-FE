@@ -10,7 +10,7 @@ import {
 } from 'react';
 
 import { SelectPersonInputProps } from '@types';
-import { randomId, mergeRefs } from '@utils';
+import { mergeRefs } from '@utils';
 import { IconCancelWhite } from '@assets';
 
 import styled from './styles.module.scss';
@@ -73,33 +73,37 @@ function _SelectClassInput(
         </Link>
       </div>
       <div className={styled.preview_wrapper}>
-        {selectedList.map((preview, index) => {
-          return (
-            <div key={index} className={styled.preview_item}>
-              <div className={styled.tag}>전체</div>
-              <div className={styled.title}>{preview.lectureTitle}</div>
-              <ProfileCard
-                // @ts-ignore
-                customers={selectedList[0].members}
-                width={28}
-                height={28}
-                xMargin={-6}
-                count={true}
-              />
+        {selectedList.map(
+          (
+            preview: { lectureId: string; lectureTitle: string; members: any[] },
+            index: number,
+          ) => {
+            return (
+              <div key={index} className={styled.preview_item}>
+                <div className={styled.tag}>전체</div>
+                <div className={styled.title}>{preview.lectureTitle}</div>
+                <ProfileCard
+                  customers={preview.members}
+                  width={28}
+                  height={28}
+                  xMargin={-6}
+                  count={true}
+                />
 
-              <button
-                className={styled.delete_button}
-                onClick={(event: MouseEvent<HTMLButtonElement>) => {
-                  event.stopPropagation();
-                  event.preventDefault();
+                <button
+                  className={styled.delete_button}
+                  onClick={(event: MouseEvent<HTMLButtonElement>) => {
+                    event.stopPropagation();
+                    event.preventDefault();
 
-                  removeItemHandler(preview.lectureId);
-                }}>
-                <IconCancelWhite width={14} height={14} />
-              </button>
-            </div>
-          );
-        })}
+                    removeItemHandler(preview.lectureId);
+                  }}>
+                  <IconCancelWhite width={14} height={14} />
+                </button>
+              </div>
+            );
+          },
+        )}
       </div>
     </div>
   );

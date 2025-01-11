@@ -61,10 +61,10 @@ const initialState: State = {
   checkedList: [],
 };
 
-const searchUserStore = create<State & Action>()(
+const searchUserStore = create<any>()(
   persist(
     (set) => ({
-      reset: () => {
+      resetMemberData: () => {
         set(initialState);
       },
       userList: [],
@@ -123,10 +123,10 @@ const searchUserStore = create<State & Action>()(
   ),
 );
 
-const searchClassStore = create<State & Action>()(
+const searchClassStore = create<any>()(
   persist(
     (set) => ({
-      reset: () => {
+      resetClassData: () => {
         set(initialState);
       },
       userList: [],

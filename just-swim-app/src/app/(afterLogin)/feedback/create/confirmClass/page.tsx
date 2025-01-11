@@ -37,6 +37,10 @@ export default function ClassFeedbackConfirm() {
     router.push('/feedback');
   };
 
+  const handleBack = () => {
+    router.back();
+  };
+
   return (
     <>
       <Header title="작성 내역 확인" />
@@ -144,7 +148,9 @@ export default function ClassFeedbackConfirm() {
       </div>
 
       <div className={styled.btn_wrap}>
-        <button className={styled.back_btn}>돌아가기</button>
+        <button onClick={handleBack} className={styled.back_btn}>
+          돌아가기
+        </button>
         <button
           className={styled.submit_btn}
           disabled={!checked}

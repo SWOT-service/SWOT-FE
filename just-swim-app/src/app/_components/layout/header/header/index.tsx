@@ -10,13 +10,31 @@ import styled from './header.module.scss';
 
 interface Props {
   title: string;
+  routerBackUrl?: string;
   editURL?: string;
+  resetFunc1?: () => void;
+  resetFunc2?: () => void;
 }
 
-export function Header({ title, editURL }: Props) {
+export function Header({
+  title,
+  routerBackUrl,
+  editURL,
+  resetFunc1,
+  resetFunc2,
+}: Props) {
   const router = useRouter();
 
   const goBack = () => {
+    if (resetFunc1) {
+      resetFunc1();
+      if (resetFunc2) {
+        resetFunc2();
+      }
+    }
+    if (routerBackUrl) {
+      return router.replace(routerBackUrl);
+    }
     router.back();
   };
 

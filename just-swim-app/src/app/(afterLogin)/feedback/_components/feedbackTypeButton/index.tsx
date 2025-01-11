@@ -3,13 +3,18 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { useUserStore } from '@store';
+import { searchClassStore, searchUserStore, useUserStore } from '@store';
 
 import styled from './feedbackTypeButton.module.scss';
+import { feedbackStore } from '@/_store/feedback';
 
 export function FeedbackTypeButton({ token }: { token: string }) {
   const router = useRouter();
   const { getUserType } = useUserStore();
+  const { resetFeedbackFormData } = feedbackStore();
+  const { resetClassData } = searchClassStore();
+  const { resetMemberData } = searchUserStore();
+
   const [userType, setUserType] = useState<string | null>(null);
 
   useEffect(() => {
@@ -18,6 +23,9 @@ export function FeedbackTypeButton({ token }: { token: string }) {
   }, [token, getUserType]);
 
   const handleIndividualClick = (feedbackType: string) => {
+    resetFeedbackFormData();
+    resetClassData();
+    resetMemberData();
     router.push(`feedback/create/${feedbackType}`);
   };
 
