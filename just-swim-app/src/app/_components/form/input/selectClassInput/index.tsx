@@ -64,7 +64,9 @@ function _SelectClassInput(
         multiple
         readOnly
       />
-      <div className={styled.input_inner_wrapper}>
+      <div
+        className={styled.input_inner_wrapper}
+        style={{ minWidth: selectedList.length > 0 ? '83px' : '100%' }}>
         <Link href={'/feedback/search/class'} className={styled.select_user}>
           <div className={styled.icon_wrapper}>
             <IconSelectUser width={30} height={30} />
@@ -72,7 +74,9 @@ function _SelectClassInput(
           </div>
         </Link>
       </div>
-      <div className={styled.preview_wrapper}>
+      <div
+        className={styled.preview_wrapper}
+        style={{ display: selectedList.length > 0 ? 'flex' : 'none' }}>
         {selectedList.map((preview, index) => {
           return (
             <div key={index} className={styled.preview_item}>
