@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useUserStore } from '@store';
+import FeedbackTypeButtonGroup from '@assets/feedback_type_button_group.svg';
+import FeedbackTypeButtonPersonal from '@assets/feedback_type_button_personal.svg';
 
 import styled from './feedbackTypeButton.module.scss';
 
@@ -31,6 +33,7 @@ export function FeedbackTypeButton({ token }: { token: string }) {
             <button
               onClick={() => handleIndividualClick('person')}
               className={styled.button_person}>
+              <FeedbackTypeButtonPersonal className={styled.icon} />
               <p className={styled.button_title}>
                 <span>개별</span>
                 <br />
@@ -42,6 +45,7 @@ export function FeedbackTypeButton({ token }: { token: string }) {
             <button
               onClick={() => handleIndividualClick('class')}
               className={styled.button_class}>
+              <FeedbackTypeButtonGroup className={styled.icon} />
               <p className={styled.button_title}>
                 <span>반별</span>
                 <br />
