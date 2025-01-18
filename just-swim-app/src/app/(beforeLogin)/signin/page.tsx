@@ -1,5 +1,3 @@
-'use client';
-
 import JustSwimSVG from '@assets/logo.svg';
 import { JUST_SWIM, SNS, TEXT } from '@data';
 import { Provider } from '@types';
