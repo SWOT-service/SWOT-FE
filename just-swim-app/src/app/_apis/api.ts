@@ -28,15 +28,15 @@ const api = async <T>(
     headers: {
       Authorization: authorizationToken ? `Bearer ${authorizationToken}` : '',
       ...options?.headers,
+      'Content-Type': 'application/json',
     },
     credentials: 'include',
   };
   const finalOptions = { ...defaultOptions, ...options };
-
+  //   console.log('finalOptions', finalOptions);
   try {
     const response = await fetch(URL, finalOptions);
     const data = await response.json();
-
     return { status: response.status, data };
   } catch (error) {
     // redirect('/not-found');

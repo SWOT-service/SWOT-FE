@@ -12,7 +12,6 @@ import { SelectClassInput } from '@/_components/form/input/selectClassInput';
 import { IconCalendar } from '@assets';
 import { useRouter } from 'next/navigation';
 import { feedbackStore } from '@/_store/feedback';
-import { submitForm } from './action';
 import { getClassList } from '@apis';
 import { searchClassStore } from '@store';
 

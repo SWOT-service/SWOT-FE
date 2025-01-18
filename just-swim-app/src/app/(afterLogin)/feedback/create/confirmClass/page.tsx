@@ -11,30 +11,37 @@ import { useRouter } from 'next/navigation';
 
 export default function ClassFeedbackConfirm() {
   // @ts-ignore
-  const { selectedList, reset } = searchClassStore();
+  const { selectedList, resetClassData } = searchClassStore();
   const { formDataState } = feedbackStore();
   const target = JSON.parse(formDataState.target || '[]');
-  //   const target = JSON.parse(formDataState.target);
   const [checked, setChecked] = useState(false);
 
   const router = useRouter();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // @ts-ignore
     const userIds = (target[0]?.members || []).map((el) => Number(el.userId));
     const lectureId = Number(target[0].lectureId);
     const target_users = [
       {
-        userIds,
         lectureId,
+        userIds,
       },
     ];
 
-    postFeedback(formDataState, formDataState.type, target_users);
+    try {
+      const data = await postFeedback(
+        formDataState,
+        formDataState.type,
+        target_users,
+      );
 
-    reset();
-
-    router.push('/feedback');
+      resetClassData();
+      router.replace('/feedback');
+      window.location.href = '/feedback';
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleBack = () => {
@@ -54,7 +61,12 @@ export default function ClassFeedbackConfirm() {
         <div className={styled.feedback_content}>
           <div className={`${styled.wrap} ${styled.row}`}>
             <div className={styled.title}>
-              선택 수강생: <span>{target.length}</span>
+              선택 수강생:{' '}
+              <span>
+                {target.reduce((total: number, lecture: any) => {
+                  return total + (lecture.members?.length || 0);
+                }, 0)}
+              </span>
             </div>
             <div className={styled.tag}>
               {target?.length > 0 ? (
