@@ -7,24 +7,23 @@
   gap: 10px;
   padding: 0 16px;
 
-  .button_person {
+  .button_person,
+  .button_class {
     display: flex;
     flex-direction: column;
+    position: relative;
 
     flex: 1;
     height: 152px;
-    background-color: #f3f8ff;
-    border: 1px solid #dcebff;
     border-radius: 10px;
     text-align: left;
     padding: 15px;
+    overflow: hidden;
 
     .button_title {
       @include Title3-M;
 
       margin-top: auto;
-
-      color: #3689ff;
 
       span {
         @include Title2-SB;
@@ -37,39 +36,33 @@
       margin-top: 6px;
 
       color: $--gray-700;
+    }
+
+    .icon {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 1;
+      width: 159px;
+      height: 150px;
+    }
+  }
+
+  .button_person {
+    background-color: #f3f8ff;
+    border: 1px solid #dcebff;
+
+    .button_title {
+      color: #3689ff;
     }
   }
 
   .button_class {
-    display: flex;
-    flex-direction: column;
-
-    flex: 1;
-    height: 152px;
     background-color: #f1fdfd;
     border: 1px solid #d8f7fa;
-    border-radius: 10px;
-    text-align: left;
-    padding: 15px;
 
     .button_title {
-      @include Title3-M;
-
-      margin-top: auto;
-
       color: #04c9d6;
-
-      span {
-        @include Title2-SB;
-      }
-    }
-
-    .button_desc {
-      @include Body3-R;
-
-      margin-top: 6px;
-
-      color: $--gray-700;
     }
   }
 }

@@ -1,60 +1,73 @@
 'use client';
 
-import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
+import React, {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+  useTransition,
+} from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
-import { MemberProps } from "./server";
+import { MemberProps } from './server';
 import IconSearch from './icon_search.svg';
 import IconDown from './icon_down.svg';
 import IconCheckSmall from './icon_check_small.svg';
 
-import { searchUserStore } from "@store";
-import { randomId } from "@utils";
+import { searchUserStore } from '@store';
+import { randomId } from '@utils';
 
 import styled from './styles.module.scss';
 
 function _MemberItem({
   member,
   setSelected,
-  defaultSelected
+  defaultSelected,
 }: {
-  member: MemberProps,
-  setSelected: Dispatch<SetStateAction<MemberProps[]>>,
-  defaultSelected: boolean,
+  member: MemberProps;
+  setSelected: Dispatch<SetStateAction<MemberProps[]>>;
+  defaultSelected: boolean;
 }) {
   // 현재 수강생 선택 여부
   const [itemSelected, setItemSelected] = useState<boolean>(defaultSelected);
 
   // 현재 수강생 선택 여부 변경
   const onClickMember = () => {
-    setItemSelected(s => !s);
-  }
+    setItemSelected((s) => !s);
+  };
 
   // 현재 수강생 선택 여부가 변경될때마다
   useEffect(() => {
     if (itemSelected) {
       // 선택이라면 기존 배열에 추가
-      setSelected(prev => {
+      setSelected((prev) => {
         const result = [...prev];
 
         for (const m of result) {
-          if (m.lectureTitle === member.lectureTitle && m.memberId === member.memberId) {
+          if (
+            m.lectureTitle === member.lectureTitle &&
+            m.memberId === member.memberId
+          ) {
             return result;
           }
         }
-        
+
         result.push(member);
-        
+
         return result;
-      })
+      });
     } else {
       // 삭제라면 기존 배열에서 삭제
-      setSelected(prev => {
+      setSelected((prev) => {
         const result = [];
 
         for (const item of prev) {
-          if (item.lectureTitle === member.lectureTitle && item.memberId === member.memberId) {
+          if (
+            item.lectureTitle === member.lectureTitle &&
+            item.memberId === member.memberId
+          ) {
             continue;
           }
 
@@ -71,27 +84,26 @@ function _MemberItem({
   return (
     <button onClick={onClickMember} className={styled.member_item}>
       <div className={`${styled.check_box} ${itemSelected && styled.selected}`}>
-        {
-          itemSelected &&
-          <IconCheckSmall />
-        }
+        {itemSelected && <IconCheckSmall />}
       </div>
       <div className={styled.image_wrapper}>
-        {
-          // 하드코딩 된 부분, 추후 수정 필요
-          member.profileImage.startsWith('http')
-          ?
-          <Image src={member.profileImage} alt={member.memberNickname} width={34} height={34} />
-          :
+        {member.profileImage && member.profileImage.startsWith('http') ? (
+          <Image
+            src={member.profileImage}
+            alt={member.memberNickname}
+            width={34}
+            height={34}
+          />
+        ) : (
           <div className={styled.empty_image} />
-        }
+        )}
       </div>
       <p className={styled.name}>{member.memberNickname}</p>
       <div className={styled.lecture}>
         <p>{member.lectureTitle}</p>
       </div>
     </button>
-  )
+  );
 }
 
 const MemberItem = React.memo(_MemberItem);
@@ -101,13 +113,13 @@ function _GroupList({
   reverse,
   search,
   setSelected,
-  defaultList
+  defaultList,
 }: {
-  group: { lecture: string, members: MemberProps[] }[],
-  reverse: boolean,
-  search: string,
-  setSelected: Dispatch<SetStateAction<MemberProps[]>>,
-  defaultList: MemberProps[],
+  group: { lecture: string; members: MemberProps[] }[];
+  reverse: boolean;
+  search: string;
+  setSelected: Dispatch<SetStateAction<MemberProps[]>>;
+  defaultList: MemberProps[];
 }) {
   let list = group;
 
@@ -118,47 +130,48 @@ function _GroupList({
 
   return (
     <div className={styled.group_list}>
-      {
-        list.map(g => {
-          // 현재 강의에서, 검색어를 포함하는 수강생 확인
-          const members = [];
+      {list.map((g) => {
+        // 현재 강의에서, 검색어를 포함하는 수강생 확인
+        const members = [];
 
-          for (const m of g.members) {
-            if (m.memberNickname.includes(search)) {
-              members.push(m);
-            }
+        for (const m of g.members) {
+          if (m.memberNickname.includes(search)) {
+            members.push(m);
           }
+        }
 
-          if (members.length === 0) {
-            // 검색어를 포함하는 수강생이 없으면 현재 강의명도 출력하지 않음
-            return null;
-          } else {
-            // 검색어를 포함하는 수강생이 한명이라도 있으면 강의명과 수강생 출력
-            return (
-              <div key={randomId()}>
-                <p className={styled.title}>{g.lecture}</p>
-                {
-                  members.map(m => {
-                    let flag = false;
+        if (members.length === 0) {
+          // 검색어를 포함하는 수강생이 없으면 현재 강의명도 출력하지 않음
+          return null;
+        } else {
+          // 검색어를 포함하는 수강생이 한명이라도 있으면 강의명과 수강생 출력
+          return (
+            <div key={randomId()}>
+              <p className={styled.title}>{g.lecture}</p>
+              {members.map((m) => {
+                let flag = false;
 
-                    for (const def of defaultList) {
-                      if (def.memberId === m.memberId) {
-                        flag = true;
-                      }
-                    }
-
-                    return (
-                      <MemberItem key={randomId()} member={m} setSelected={setSelected} defaultSelected={flag} />
-                    )
-                  })
+                for (const def of defaultList) {
+                  if (def.memberId === m.memberId) {
+                    flag = true;
+                  }
                 }
-              </div>
-            )
-          }
-        })
-      }
+
+                return (
+                  <MemberItem
+                    key={randomId()}
+                    member={m}
+                    setSelected={setSelected}
+                    defaultSelected={flag}
+                  />
+                );
+              })}
+            </div>
+          );
+        }
+      })}
     </div>
-  )
+  );
 }
 
 const GroupList = React.memo(_GroupList);
@@ -168,13 +181,13 @@ function _NameList({
   reverse,
   search,
   setSelected,
-  defaultList
+  defaultList,
 }: {
-  name: MemberProps[],
-  reverse: boolean,
-  search: string,
-  setSelected: Dispatch<SetStateAction<MemberProps[]>>,
-  defaultList: MemberProps[],
+  name: MemberProps[];
+  reverse: boolean;
+  search: string;
+  setSelected: Dispatch<SetStateAction<MemberProps[]>>;
+  defaultList: MemberProps[];
 }) {
   let list = name;
 
@@ -185,28 +198,31 @@ function _NameList({
 
   return (
     <div className={styled.name_list}>
-      {
-        list.map(member => {
-          if (member.memberNickname.includes(search)) {
-            let flag = false;
+      {list.map((member) => {
+        if (member.memberNickname.includes(search)) {
+          let flag = false;
 
-            for (const def of defaultList) {
-              if (def.memberId === member.memberId) {
-                flag = true;
-              }
+          for (const def of defaultList) {
+            if (def.memberId === member.memberId) {
+              flag = true;
             }
-            
-            // 검색어를 포함하는 수강생만 출력
-            return (
-              <MemberItem key={randomId()} member={member} setSelected={setSelected} defaultSelected={flag} />
-            )
-          } else {
-            return null;
           }
-        })
-      }
+
+          // 검색어를 포함하는 수강생만 출력
+          return (
+            <MemberItem
+              key={randomId()}
+              member={member}
+              setSelected={setSelected}
+              defaultSelected={flag}
+            />
+          );
+        } else {
+          return null;
+        }
+      })}
     </div>
-  )
+  );
 }
 
 const NameList = React.memo(_NameList);
@@ -215,14 +231,11 @@ export function Search({
   group,
   name,
 }: {
-  group: { lecture: string, members: MemberProps[] }[],
-  name: MemberProps[],
+  group: { lecture: string; members: MemberProps[] }[];
+  name: MemberProps[];
 }) {
   // member store
-  const {
-    selectedList,
-    updateSelectedList,
-  } = searchUserStore();
+  const { selectedList, updateSelectedList } = searchUserStore();
 
   const router = useRouter();
 
@@ -238,7 +251,7 @@ export function Search({
   // input 이벤트 핸들러
   const onChangeInput = (event: ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
-  }
+  };
 
   // 이 부분은 크게 신경 쓰지 않아도 됨
   // 타입 선택의 우선순위를 미뤄주는 부분
@@ -249,12 +262,12 @@ export function Search({
     startTransition(() => {
       setType(type);
     });
-  }
+  };
 
   // 오름차순, 내림차순 여부
   const toggleReverse = () => {
-    setReverse(s => !s);
-  }
+    setReverse((s) => !s);
+  };
 
   // 타입이 변경될 때 오름차순으로 초기화, 선택된 수강생 삭제
   useEffect(() => {
@@ -270,16 +283,24 @@ export function Search({
     // console.table(selected);
     updateSelectedList(selected);
     router.push('/feedback/create/person');
-  }
+  };
 
   return (
     <div className={styled.container}>
       <div className={styled.header}>
         <div className={styled.type}>
-          <button className={`${styled.select} ${type === 'group' && styled.selected}`} onClick={() => { onClickSelectType("group") }}>
+          <button
+            className={`${styled.select} ${type === 'group' && styled.selected}`}
+            onClick={() => {
+              onClickSelectType('group');
+            }}>
             <span>수업별로 보기</span>
           </button>
-          <button className={`${styled.select} ${type === 'name' && styled.selected}`} onClick={() => { onClickSelectType("name") }}>
+          <button
+            className={`${styled.select} ${type === 'name' && styled.selected}`}
+            onClick={() => {
+              onClickSelectType('name');
+            }}>
             <span>이름순으로 보기</span>
           </button>
         </div>
@@ -287,7 +308,7 @@ export function Search({
           <div className={styled.icon}>
             <IconSearch />
           </div>
-          <input 
+          <input
             className={styled.input}
             type="text"
             onChange={onChangeInput}
@@ -298,25 +319,39 @@ export function Search({
       </div>
       <div className={styled.info}>
         <p>{type === 'group' ? '수업명' : '이름'}</p>
-        <button className={`${styled.button} ${reverse && styled.reverse}`} onClick={toggleReverse}>
+        <button
+          className={`${styled.button} ${reverse && styled.reverse}`}
+          onClick={toggleReverse}>
           <span>{reverse ? '내림차순' : '오름차순'}</span>
           <IconDown />
         </button>
       </div>
-      {
-        type === 'group' ?
-        <GroupList group={group} reverse={reverse} search={search} setSelected={setSelected} defaultList={selectedList} /> :
-        <NameList name={name} reverse={reverse} search={search} setSelected={setSelected} defaultList={selectedList} />
-      }
+      {type === 'group' ? (
+        <GroupList
+          group={group}
+          reverse={reverse}
+          search={search}
+          setSelected={setSelected}
+          defaultList={selectedList}
+        />
+      ) : (
+        <NameList
+          name={name}
+          reverse={reverse}
+          search={search}
+          setSelected={setSelected}
+          defaultList={selectedList}
+        />
+      )}
       <div className={styled.button_container}>
-        <button className={`${styled.button} ${selected.length === 0 ? styled.disable : styled.active}`} disabled={selected.length === 0} onClick={onClickSelect}>
-          {
-            selected.length !== 0 &&
-            <span>{`${selected.length}명 `}</span>
-          }
+        <button
+          className={`${styled.button} ${selected.length === 0 ? styled.disable : styled.active}`}
+          disabled={selected.length === 0}
+          onClick={onClickSelect}>
+          {selected.length !== 0 && <span>{`${selected.length}명 `}</span>}
           <span>선택하기</span>
         </button>
       </div>
     </div>
-  )
+  );
 }

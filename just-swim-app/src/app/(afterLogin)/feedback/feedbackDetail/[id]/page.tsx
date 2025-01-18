@@ -5,6 +5,7 @@ import styled from './feedbackDetail.module.scss';
 import Send from '@assets/send.svg';
 import Calendar from '@assets/calendar.svg';
 import UserTypeIndividual from '@assets/user_type_individual.svg';
+import Link from '@assets/link.svg';
 
 import { HistoryBackHeader } from '@components';
 import { useEffect, useState } from 'react';
@@ -18,6 +19,14 @@ export default function FeedbackDetail() {
   const [feedbackInfo, setFeedbackInfo] = useState<FeedbackInfo>();
   const [feedbackTarget, setFeedbackTarget] = useState<Members[]>([]);
   const [feedbackCreatedAt, setFeedbackCreatedAt] = useState<string>('');
+
+  const formatDate = (date: string | undefined): string => {
+    if (!date) {
+      return '';
+    }
+    const [year, month, day] = date.split('.');
+    return `${year}년 ${month}월 ${day}일`;
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,10 +45,12 @@ export default function FeedbackDetail() {
     fetchData();
   }, [id]);
 
+  const feedbackDate = formatDate(feedbackInfo?.feedbackDate);
+
   return (
     <>
       <HistoryBackHeader
-        title="피드백 기록 보기"
+        title="피드백 상세 보기"
         additionalLink="/"
         additionalContent="수정하기"
       />
@@ -57,7 +68,7 @@ export default function FeedbackDetail() {
           <span className={styled.detail_icon}>
             <Calendar />
           </span>
-          <p>{feedbackInfo?.feedbackDate}</p>
+          <p>{feedbackDate}</p>
         </div>
         <div className={styled.detail_title}>
           <p>피드백 대상</p>
@@ -104,7 +115,9 @@ export default function FeedbackDetail() {
               <p>첨부 링크</p>
             </div>
             <div className={styled.detail_content}>
-              {/* TODO: 이미지 넣기 */}
+              <span className={styled.detail_icon}>
+                <Link />
+              </span>
               <p>{feedbackInfo?.feedbackLink}</p>
             </div>
           </div>

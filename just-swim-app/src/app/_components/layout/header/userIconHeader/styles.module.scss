@@ -20,7 +20,7 @@
     gap: 14px;
 
     h1 {
-      @include Title3-M;
+      @include Heading2;
     }
   }
 
@@ -34,7 +34,7 @@
 
     border-radius: 50%;
     background-color: $--gray-100;
-    
+
     overflow: hidden;
   }
 }
