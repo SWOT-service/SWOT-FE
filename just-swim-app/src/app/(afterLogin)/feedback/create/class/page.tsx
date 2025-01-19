@@ -27,10 +27,9 @@ export default function FeedbackWrite() {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const { setFeedbackFormData, resetFeedbackFormData, getFeedbackFormData } =
-    feedbackStore();
+  const { setFeedbackFormData, resetFeedbackFormData } = feedbackStore();
   const { resetClassData } = searchClassStore();
-  const [lecture, setLecture] = useState<any>();
+  const [lectures, setLectures] = useState<any>();
   const [images, setImages] = useState<string[]>([]);
 
   useEffect(() => {
@@ -38,7 +37,7 @@ export default function FeedbackWrite() {
       const data = await getClassList();
       if (data.data) {
         const lectureTime = data.lectureTime ? data.lectureTime.split('-') : [];
-        setLecture({ ...data.data, lectureTime });
+        setLectures({ ...data.data, lectureTime });
       }
     };
     getLecturesData();
@@ -96,10 +95,6 @@ export default function FeedbackWrite() {
     return router.push('/feedback/create/confirmClass');
   };
 
-  const handleClick = () => {
-    fileRef?.current?.click();
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const targetFiles = (e.target as HTMLInputElement).files as FileList;
     const targetFilesArray = Array.from(targetFiles);
@@ -130,7 +125,6 @@ export default function FeedbackWrite() {
         routerBackUrl={'/feedback'}
       />
       <form onSubmit={handleSubmit(onSubmit)} className={styled.feedback_write}>
-        {/* <form onSubmit={onValid} className={styled.feedback_write}> */}
         <div className={styled.inner}>
           <div className={styled.select_customer}>
             <div className={styled.title}>
@@ -141,7 +135,7 @@ export default function FeedbackWrite() {
             </div>
             <SelectClassInput
               {...register('target')}
-              lecture={lecture}
+              lectures={lectures}
               setValue={setValue}
               errors={[errors.target?.message ?? '']}
             />

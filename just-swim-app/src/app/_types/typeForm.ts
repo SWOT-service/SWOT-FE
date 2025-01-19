@@ -68,5 +68,5 @@ export interface TextAreaProps {
 
 export interface SelectPersonInputProps {
   name: string;
-  lecture?: LectureProps;
+  lectures?: LectureProps;
 }

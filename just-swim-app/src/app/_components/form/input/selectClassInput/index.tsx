@@ -27,7 +27,7 @@ interface SelectClassInputProps extends SelectPersonInputProps {
 }
 
 function _SelectClassInput(
-  { name, setValue, lecture, ...props }: SelectClassInputProps,
+  { name, setValue, lectures, ...props }: SelectClassInputProps,
   ref: ForwardedRef<HTMLInputElement>,
 ) {
   const {
@@ -41,9 +41,9 @@ function _SelectClassInput(
 
   useEffect(() => {
     /* @ts-ignore */
-    lecture?.lectureId && updateSelectedList([lecture]);
-    lecture?.lectureId && updateCheckList([lecture]);
-  }, [lecture, updateSelectedList, updateCheckList]);
+    lectures?.lectureId && updateSelectedList([lectures]);
+    lectures?.lectureId && updateCheckList([lectures]);
+  }, [lectures, updateSelectedList, updateCheckList]);
 
   useEffect(() => {
     const value = selectedList.length > 0 ? JSON.stringify(selectedList) : '';

@@ -20,7 +20,7 @@ import {
 } from '@components';
 
 import { IconCalendar } from '@assets';
-import { getFeedbackPresignedURL } from '@apis';
+import { getClassList, getFeedbackPresignedURL } from '@apis';
 
 // test
 // RHF 사용을 위한 커스텀 훅
@@ -33,6 +33,7 @@ import { FormType, formSchema } from '@/_schema/index';
 import { useRouter } from 'next/navigation';
 import { feedbackStore } from '@/_store/feedback';
 import { Fetch } from '@utils';
+import { searchUserStore } from '@store';
 
 interface CustomFormData {
   date: string;
@@ -44,8 +45,27 @@ interface CustomFormData {
 
 ///////////////////////////
 export default function FeedbackWrite() {
-  const { setFeedbackFormData } = feedbackStore();
   const router = useRouter();
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const { setFeedbackFormData, resetFeedbackFormData } = feedbackStore();
+  const { resetMemberData } = searchUserStore();
+  const [members, setMembers] = useState<any>();
+  const [images, setImages] = useState<string[]>([]);
+
+  useEffect(() => {
+    const getMembersData = async () => {
+      // 수강생 목록 조회 - 프로필, 이름, 반 이름
+      const data = await getClassList().then((res) => res.data);
+      console.log('calssList: ', data);
+      if (data.success) {
+        const memberData = data.data.flatMap((d: any) => d.members);
+        console.log('memberData: ', memberData);
+        setMembers(memberData);
+      }
+    };
+    getMembersData();
+  }, []);
 
   // test
   const {
@@ -60,10 +80,9 @@ export default function FeedbackWrite() {
   });
 
   //   const [feedbackFormData, setFeedbackFormData] = useState('');
-  const [images, setImages] = useState<File[]>([]);
 
   // handleSubmit에는 RHF에서 validate된 데이터가 들어간다
-  const onSubmit = handleSubmit(async (data: FormType) => {
+  const onSubmit = async (data: FormType) => {
     // console.log('images', images);
     const formData = new FormData();
 
@@ -82,9 +101,6 @@ export default function FeedbackWrite() {
 
     // @ts-ignore
     const formDataObject: CustomFormData = {};
-    // formData.forEach((value, key) => {
-    //   formDataObject[key] = value;
-    // });
 
     formData.forEach((value, key) => {
       // console.log(value, key);
@@ -104,64 +120,12 @@ export default function FeedbackWrite() {
     });
 
     setFeedbackFormData(formDataObject, 'personal');
-
-    const presignedURLs = await getFeedbackPresignedURL(
-      data.file.map((f: File) => encodeURI(encodeURIComponent(f.name))),
-    );
-
-    for (let i = 0; i < presignedURLs.length; i++) {
-      const url = presignedURLs[i].presignedUrl;
-      console.log(url);
-      const image = data.file[i];
-
-      try {
-        const response = await fetch(url, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': image.type,
-            'x-amz-acl': 'public-read',
-          },
-          body: URL.createObjectURL(image),
-        });
-
-        console.log(response);
-
-        const result = await response.json();
-
-        console.log(result);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    // const errors = await submitForm(formData);
-
-    // router.push(`confirm`);
-  });
-
-  // @ts-ignore
-  const onValid = async (data: CreateState) => {
-    const imageurlList: string[] = [];
-    // RHF에 의해서 자동으로 호출
-    // form이 유효하고 검증된 데이터가 존재하는 경우에만
-    await onSubmit();
-  };
-
-  ////////////////////////
-  const fileRef = useRef<HTMLInputElement>(null);
-  const handleClick = () => {
-    fileRef?.current?.click();
+    return router.push('/feedback/create/confirm');
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const targetFiles = (e.target as HTMLInputElement).files as FileList;
     const targetFilesArray = Array.from(targetFiles);
-    // const selectedFiles: string[] = targetFilesArray.map((file) => {
-    //   console.log(file);
-    //   return URL.createObjectURL(file);
-    // });
-    // 합체!
-    // setImages((prev) => prev.concat(selectedFiles));
 
     [...targetFilesArray].forEach((file) => {
       const reader = new FileReader();
@@ -182,8 +146,13 @@ export default function FeedbackWrite() {
 
   return (
     <>
-      <Header title="개별 피드백 작성하기" />
-      <form action={onValid} className={styled.feedback_write}>
+      <Header
+        title="개별 피드백 작성하기"
+        resetFunc1={resetFeedbackFormData}
+        resetFunc2={resetMemberData}
+        routerBackUrl={'/feedback'}
+      />
+      <form onSubmit={handleSubmit(onSubmit)} className={styled.feedback_write}>
         <div className={styled.inner}>
           <div className={styled.select_customer}>
             <div className={styled.title}>
@@ -192,9 +161,11 @@ export default function FeedbackWrite() {
             <div className={styled.sub_title}>
               피드백을 남길 수강생의 정보를 확인해주세요
             </div>
+            {/* TODO: 추가 수정이 필요함 */}
             <SelectPersonInput
               {...register('target')}
               // @ts-ignore
+              members={members}
               setValue={setValue}
               errors={[errors.target?.message ?? '']}
             />
@@ -203,59 +174,65 @@ export default function FeedbackWrite() {
 
         <div className={styled.divider}></div>
 
-        <div className={styled.feedback_content}>
-          <div className={styled.wrap}>
-            <div className={styled.title}>
-              피드백 기준 수업일 <span>(필수)</span>
+        <div className={styled.feedback_write}>
+          <div className={styled.feedback_content}>
+            <div className={styled.wrap}>
+              <div className={styled.title}>
+                피드백 기준 수업일 <span>(필수)</span>
+              </div>
+              <DateInput
+                renderIcon={() => <IconCalendar width={14} height={14} />}
+                placeholder="수업 일자를 선택해주세요"
+                suffix="종료"
+                {...register('date')}
+                // @ts-ignore
+                errors={[errors.date?.message ?? '']}
+              />
             </div>
-            <DateInput
-              renderIcon={() => <IconCalendar width={14} height={14} />}
-              placeholder="수업 일자를 선택해주세요"
-              suffix="종료"
-              {...register('date')}
-              // @ts-ignore
-              errors={[errors.date?.message ?? '']}
-            />
-          </div>
-          <div className={styled.wrap}>
-            <div className={styled.title}>첨부 파일</div>
-            <div className={`${styled.sub_title} ${styled.file}`}>
-              최대 4개의 20MB 이하 파일만 첨부 가능합니다
+            <div className={styled.wrap}>
+              <div className={styled.title}>첨부 파일</div>
+              <div className={`${styled.sub_title} ${styled.file}`}>
+                최대 4개의 20MB 이하 파일만 첨부 가능합니다
+              </div>
+
+              <FileInput
+                {...register('file')}
+                onChange={handleChange}
+                // @ts-ignore
+                setValue={setValue}
+              />
             </div>
 
-            <FileInput
-              {...register('file')}
-              onChange={handleChange}
-              // @ts-ignore
-              setValue={setValue}
-            />
-          </div>
-
-          <div className={styled.wrap}>
-            <div className={styled.title}>첨부 링크</div>
-            <LinkInput
-              placeholder="첨부하고자 하는 URL을 입력해주세요"
-              {...register('link')}
-              // @ts-ignore
-              errors={[errors.link?.message ?? '']}
-            />
-          </div>
-
-          <div className={styled.wrap}>
-            <div className={styled.title}>
-              피드백 남기기 <span>(필수)</span>
+            <div className={styled.wrap}>
+              <div className={styled.title}>첨부 링크</div>
+              <LinkInput
+                placeholder="첨부하고자 하는 URL을 입력해주세요"
+                {...register('link')}
+                // @ts-ignore
+                errors={[errors.link?.message ?? '']}
+              />
             </div>
-            <TextArea
-              placeholder="피드백을 입력해주세요"
-              height={100}
-              {...register('content')}
-              // @ts-ignore
-              errors={[errors.content?.message ?? '']}
-            />
+
+            <div className={styled.wrap}>
+              <div className={styled.title}>
+                피드백 남기기 <span>(필수)</span>
+              </div>
+              <TextArea
+                placeholder="피드백을 입력해주세요"
+                height={100}
+                {...register('content')}
+                // @ts-ignore
+                errors={[errors.content?.message ?? '']}
+              />
+            </div>
           </div>
         </div>
-        {/* <button disabled={!isValid} className={styled.submit_btn}> */}
-        <button className={styled.submit_btn}>전송하기</button>
+        <button
+          type="submit"
+          className={`${styled.submit_btn} ${!isValid ? styled.disabled : ''}`}
+          disabled={!isValid}>
+          작성완료
+        </button>
       </form>
     </>
   );
