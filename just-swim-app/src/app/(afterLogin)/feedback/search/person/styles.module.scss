@@ -1,79 +1,82 @@
 @import '@/globals.scss';
 
 .container {
+  margin: 0 16px;
   width: 100%;
   height: 100vh;
 
   display: flex;
   flex-direction: column;
 
-  .header {
-    padding: 20px 16px 0;
+  .title {
+    @include Title2-SB;
+    padding: 13px 0;
+  }
 
+  .header {
     .type {
       width: 100%;
       height: 40px;
-  
+
       display: flex;
-  
+
       .select {
         flex-grow: 1;
-  
+
         border-bottom: 2px solid $--gray-300;
-  
+
         & > span {
           @include Title4-SB;
-  
+
           color: $--gray-300;
         }
       }
-  
+
       .select.selected {
         border-bottom: 2px solid $--Primary-blue;
-  
+
         & > span {
           color: $--Primary-blue;
         }
       }
     }
-  
+
     .search {
       width: 100%;
-  
-      margin: 12px 0 4px;
-  
+      padding: 12px 0;
+
       position: relative;
-  
+
       .icon {
         width: 22px;
         height: 22px;
-  
+
         position: absolute;
-  
+
         top: 50%;
         left: 14px;
-  
+
         transform: translate(0, -50%);
       }
-  
+
       .input {
         @include Title3-M;
-  
+
         width: 100%;
         height: 48px;
-  
+
         padding: 0 20px 0 42px;
-  
+
         border-radius: 6px;
-  
+
         background-color: $--gray-50;
-  
+
         border: none;
         outline: none;
-  
+
         &::placeholder {
           @include Title3-M;
-  
+
           color: $--gray-500;
         }
 
@@ -87,8 +90,6 @@
   .info {
     width: 100%;
     height: 40px;
-
-    padding: 0 16px;
 
     display: flex;
     align-items: center;
@@ -152,8 +153,6 @@
 
 .list {
   width: 100%;
-
-  padding: 20px 16px;
 
   flex-grow: 1;
 
