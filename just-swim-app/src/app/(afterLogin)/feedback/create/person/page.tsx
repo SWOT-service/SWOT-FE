@@ -105,11 +105,12 @@ export default function FeedbackWrite() {
 
     setFeedbackHandler(formDataObject, 'personal');
 
-    const presignedURLs = await getFeedbackPresignedURL(data.file.map((f: File) => encodeURI(encodeURIComponent(f.name))));
+    const presignedURLs = await getFeedbackPresignedURL(
+      data.file.map((f: File) => encodeURI(encodeURIComponent(f.name))),
+    );
 
     for (let i = 0; i < presignedURLs.length; i++) {
-        const url = presignedURLs[i].presignedUrl;
-        console.log(url);
+      const url = presignedURLs[i].presignedUrl;
       const image = data.file[i];
 
       try {
@@ -122,17 +123,14 @@ export default function FeedbackWrite() {
           body: URL.createObjectURL(image),
         });
 
-        console.log(response);
-        
-  
         const result = await response.json();
 
         console.log(result);
       } catch (error) {
         console.log(error);
-      } 
+      }
     }
-    
+
     // const errors = await submitForm(formData);
 
     // router.push(`confirm`);
@@ -253,8 +251,12 @@ export default function FeedbackWrite() {
             />
           </div>
         </div>
-        {/* <button disabled={!isValid} className={styled.submit_btn}> */}
-        <button className={styled.submit_btn}>전송하기</button>
+        <button
+          type="submit"
+          className={`${styled.submit_btn} ${!isValid ? styled.disabled : ''}`}
+          disabled={!isValid}>
+          전송하기
+        </button>
       </form>
     </>
   );
