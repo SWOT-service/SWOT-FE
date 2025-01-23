@@ -28,7 +28,6 @@ interface FeedbackValue {
 }
 // @ts-ignore
 async function postFeedback(data, type, target) {
-  console.log('data', data);
   const value: FeedbackValue = {
     feedbackType: type,
     feedbackDate: data.date,

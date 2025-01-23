@@ -4,14 +4,21 @@ import api from '../api';
 const URL = `${process.env.NEXT_PUBLIC_API_URL}`;
 
 async function getMemberList() {
-  const response = await fetch(`${URL}/member`, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
-    },
-  });
-  const json = await response.json();
-  return json.data;
+  try {
+    const response = await api('/member', HTTP_METHODS.GET);
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+  //   const response = await fetch(`${URL}/member`, {
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+  //     },
+  //   });
+  //   const json = await response.json();
+  //   console.log('json', json.data);
+  //   return json.data;
 }
 
 async function getClassList(): Promise<any> {

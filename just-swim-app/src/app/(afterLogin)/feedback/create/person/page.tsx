@@ -55,12 +55,17 @@ export default function FeedbackWrite() {
 
   useEffect(() => {
     const getMembersData = async () => {
-      // 수강생 목록 조회 - 프로필, 이름, 반 이름
+      // 수강생 목록 조회 - 이름 순서, 반 순서
       const data = await getClassList().then((res) => res.data);
-      console.log('calssList: ', data);
       if (data.success) {
-        const memberData = data.data.flatMap((d: any) => d.members);
-        console.log('memberData: ', memberData);
+        // 반정보가 함께 저장해야한다.
+        const memberData: any = data.data.flatMap((d: any) =>
+          d.members.map((member: any) => ({
+            ...member,
+            lectureTitle: d.lectureTitle, // lectureTitle 추가
+          })),
+        );
+        console.log('memberData', memberData);
         setMembers(memberData);
       }
     };

@@ -66,7 +66,8 @@ export interface TextAreaProps {
   onChange?: (event: ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
-export interface SelectPersonInputProps {
+export interface SelectInputProps {
   name: string;
   lectures?: LectureProps;
+  members?: any;
 }

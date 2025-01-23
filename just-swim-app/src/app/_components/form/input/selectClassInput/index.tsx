@@ -9,7 +9,7 @@ import {
   useRef,
 } from 'react';
 
-import { SelectPersonInputProps } from '@types';
+import { SelectInputProps } from '@types';
 import { mergeRefs } from '@utils';
 import { IconCancelWhite } from '@assets';
 
@@ -21,7 +21,7 @@ import { searchClassStore } from '@store';
 import { ProfileCard } from '@components';
 import { UseFormSetValue } from 'react-hook-form';
 
-interface SelectClassInputProps extends SelectPersonInputProps {
+interface SelectClassInputProps extends SelectInputProps {
   setValue: UseFormSetValue<any>;
   errors: string[];
 }
@@ -50,6 +50,7 @@ function _SelectClassInput(
     if (inputRef.current) {
       inputRef.current.value = value;
     }
+    // name 왜 필요?
     setValue(name, value);
   }, [selectedList, name, setValue]);
 

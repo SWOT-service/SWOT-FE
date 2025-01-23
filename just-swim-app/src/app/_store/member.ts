@@ -34,7 +34,8 @@ interface ClassGroup {
 }
 
 type State = {
-  userList: Member[] | [];
+  classList?: any[];
+  userList?: Member[];
   checkedList: Member[];
   selectedList: Member[];
 };
@@ -64,16 +65,18 @@ const initialState: State = {
 const searchUserStore = create<any>()(
   persist(
     (set) => ({
+      userList: [],
+      checkedList: [],
+      selectedList: [],
       resetMemberData: () => {
         set(initialState);
       },
-      userList: [],
+      //   수강생 데이터 불러오기
       loadUserList: async () => {
         const userList = await getMemberList();
         set({ userList: userList || [] });
       },
-      checkedList: [],
-      selectedList: [],
+      //   유저가 체크됐는지 확인하고, 체크되어있으면 checkedList에 추가, 아니면 checkedList에서 제거
       checkItemHandler: (e: ChangeEvent<HTMLInputElement>, userId: string) =>
         set((state: any) => {
           const isChecked = e.target.checked;
@@ -90,13 +93,20 @@ const searchUserStore = create<any>()(
                 ),
           };
         }),
-      // 추가한 부분
+      updateCheckList: (list: Member[]) =>
+        set((state: any) => {
+          return {
+            checkedList: [...list],
+          };
+        }),
+      // 선택한 수강생을 selectedList에 추가
       updateSelectedList: (list: Member[]) =>
         set((state: any) => {
           return {
             selectedList: [...list],
           };
         }),
+      // 선택한 수강생을 selectedList에 추가??? 위와 뭐가 다른거지??
       setSelectedListHandler: () =>
         set((state: any) => {
           return {
@@ -118,6 +128,7 @@ const searchUserStore = create<any>()(
       partialize: (state: any) => ({
         selectedList: state.selectedList,
         checkedList: state.checkedList,
+        userList: state.userList,
       }),
     },
   ),
@@ -126,13 +137,15 @@ const searchUserStore = create<any>()(
 const searchClassStore = create<any>()(
   persist(
     (set) => ({
+      classList: [],
+      checkedList: [],
+      selectedList: [],
       resetClassData: () => {
         set(initialState);
       },
-      userList: [],
       loadUserList: async () => {
-        const userList = await getClassList();
-        const formattedUserList = userList?.data.data.map(
+        const classList = await getClassList();
+        const formattedUserList = classList?.data.data.map(
           (classGroup: ClassGroup) => {
             const lectureTime = classGroup.lectureTime
               ? classGroup.lectureTime.split('-')
@@ -145,21 +158,19 @@ const searchClassStore = create<any>()(
           },
         );
 
-        set({ userList: formattedUserList || [] });
+        set({ classList: formattedUserList || [] });
       },
-      checkedList: [],
-      selectedList: [],
       checkItemHandler: (e: ChangeEvent<HTMLInputElement>, lectureId: string) =>
         set((state: any) => {
           const isChecked = e.target.checked;
 
-          const selectMember = state.userList.find(
+          const selectClass = state.classList.find(
             (member: ClassGroup) => member.lectureId === lectureId,
           );
-          if (!selectMember) return state;
+          if (!selectClass) return state;
           return {
             checkedList: isChecked
-              ? [...state.checkedList, selectMember]
+              ? [...state.checkedList, selectClass]
               : state.checkedList.filter(
                   (member: ClassGroup) => member.lectureId !== lectureId,
                 ),
@@ -168,7 +179,7 @@ const searchClassStore = create<any>()(
       setCheckAllHandler: () =>
         set((state: any) => {
           return {
-            checkedList: [...state.userList],
+            checkedList: [...state.classList],
           };
         }),
       // 추가한 부분

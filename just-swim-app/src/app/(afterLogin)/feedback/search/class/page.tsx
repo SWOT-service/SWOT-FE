@@ -15,16 +15,13 @@ import { useRouter } from 'next/navigation';
 
 export default function SearchClass() {
   const router = useRouter();
-
-  // const [selected, setSelected] = useState<string | null>(null);
-
-  // const [classList, setClassList] = useState([]);
   const {
     userList,
+    // TODO: 이름이 이게 맞나?
+    loadUserList,
     checkedList,
     checkItemHandler,
     setSelectedListHandler,
-    loadUserList,
     // @ts-ignore
     setCheckAllHandler,
   } = searchClassStore();
@@ -47,12 +44,13 @@ export default function SearchClass() {
           수업을 선택해주세요
         </p>
         <div className={styled.search_class}>
-          {userList.map((group, index) => (
+          {userList.map((group: any, index: number) => (
             <li
               key={index}
               className={`${styled.item} ${
                 checkedList.some(
-                  (checkedItem) => checkedItem.lectureId === group.lectureId,
+                  (checkedItem: any) =>
+                    checkedItem.lectureId === group.lectureId,
                 )
                   ? styled.active
                   : ''
@@ -63,12 +61,14 @@ export default function SearchClass() {
                 type="checkbox"
                 onChange={(e) => checkItemHandler(e, group.lectureId)}
                 checked={checkedList.some(
-                  (checkedItem) => checkedItem.lectureId === group.lectureId,
+                  (checkedItem: any) =>
+                    checkedItem.lectureId === group.lectureId,
                 )}
               />
               <label htmlFor={group.lectureId}>
                 {checkedList.some(
-                  (checkedItem) => checkedItem.lectureId === group.lectureId,
+                  (checkedItem: any) =>
+                    checkedItem.lectureId === group.lectureId,
                 ) ? (
                   <Check color={'#3689FF'} />
                 ) : (

@@ -2,10 +2,17 @@
 
 .container {
   width: 100%;
-  height: 100vh;
+  //   height: 100vh;
 
   display: flex;
   flex-direction: column;
+
+  // height: 100dvh;
+
+  //   .title {
+  //     @include Title2-SB;
+  //     padding: 13px 0;
+  //   }
 
   .header {
     padding: 20px 16px 0;
@@ -13,67 +20,67 @@
     .type {
       width: 100%;
       height: 40px;
-  
+
       display: flex;
-  
+
       .select {
         flex-grow: 1;
-  
+
         border-bottom: 2px solid $--gray-300;
-  
+
         & > span {
           @include Title4-SB;
-  
+
           color: $--gray-300;
         }
       }
-  
+
       .select.selected {
         border-bottom: 2px solid $--Primary-blue;
-  
+
         & > span {
           color: $--Primary-blue;
         }
       }
     }
-  
+
     .search {
       width: 100%;
-  
+
       margin: 12px 0 4px;
-  
+
       position: relative;
-  
+
       .icon {
         width: 22px;
         height: 22px;
-  
+
         position: absolute;
-  
+
         top: 50%;
         left: 14px;
-  
+
         transform: translate(0, -50%);
       }
-  
+
       .input {
         @include Title3-M;
-  
+
         width: 100%;
         height: 48px;
-  
+
         padding: 0 20px 0 42px;
-  
+
         border-radius: 6px;
-  
+
         background-color: $--gray-50;
-  
+
         border: none;
         outline: none;
-  
+
         &::placeholder {
           @include Title3-M;
-  
+
           color: $--gray-500;
         }
 
