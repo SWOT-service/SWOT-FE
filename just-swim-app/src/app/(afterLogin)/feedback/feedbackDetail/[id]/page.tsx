@@ -5,6 +5,8 @@ import styled from './feedbackDetail.module.scss';
 import Send from '@assets/send.svg';
 import Calendar from '@assets/calendar.svg';
 import UserTypeIndividual from '@assets/user_type_individual.svg';
+import UserTypeGroup from '@assets/user_type_group.svg';
+import { IconArrowRightSmall } from '@assets';
 import Link from '@assets/link.svg';
 
 import { HistoryBackHeader } from '@components';
@@ -12,6 +14,8 @@ import { useEffect, useState } from 'react';
 import { getFeedbackDetail } from '@apis';
 import { FeedbackInfo, Members } from '@/_types/typeFeedback';
 import { useParams } from 'next/navigation';
+import { useModal } from '@hooks';
+import { FeedbackTargetListModal } from '../../_components/feedbackTargetListModal';
 
 export default function FeedbackDetail() {
   const { id } = useParams();
@@ -19,6 +23,7 @@ export default function FeedbackDetail() {
   const [feedbackInfo, setFeedbackInfo] = useState<FeedbackInfo>();
   const [feedbackTarget, setFeedbackTarget] = useState<Members[]>([]);
   const [feedbackCreatedAt, setFeedbackCreatedAt] = useState<string>('');
+  const { modal, showModal, hideModal } = useModal();
 
   const formatDate = (date: string | undefined): string => {
     if (!date) {
@@ -75,14 +80,26 @@ export default function FeedbackDetail() {
         </div>
         <div className={styled.detail_content}>
           <span className={styled.detail_icon}>
-            <UserTypeIndividual />
+            {feedbackTarget.length > 1 ? (
+              <UserTypeGroup />
+            ) : (
+              <UserTypeIndividual />
+            )}
           </span>
-          {/* TODO: 대상이 여러명일 때 클릭하면 리스트 보이도록 하기 */}
           <p>
             {feedbackTarget.length > 1
-              ? `${feedbackTarget[0]?.memberNickname} 외 ${feedbackTarget.length} 명`
-              : `${feedbackTarget[0]?.memberNickname}`}
+              ? `${feedbackTarget[0]?.memberName} 외 ${feedbackTarget.length - 1} 명`
+              : `${feedbackTarget[0]?.memberName}`}
           </p>
+          <span onClick={showModal} className={styled.arrow_icon}>
+            <IconArrowRightSmall fill="black" />
+          </span>
+          {modal && (
+            <FeedbackTargetListModal
+              feedbackTargetList={feedbackTarget}
+              hideModal={hideModal}
+            />
+          )}
         </div>
         <div>
           {feedbackInfo?.images && feedbackInfo.images.length > 0 && (

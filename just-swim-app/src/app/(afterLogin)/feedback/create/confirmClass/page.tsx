@@ -14,6 +14,12 @@ export default function ClassFeedbackConfirm() {
   const { selectedList, resetClassData } = searchClassStore();
   const { formDataState } = feedbackStore();
   const target = JSON.parse(formDataState.target || '[]');
+
+  const totalMembersCount = target.reduce(
+    (acc: any, cur: any) => acc + (cur.members?.length || 0),
+    0,
+  );
+  //   const target = JSON.parse(formDataState.target);
   const [checked, setChecked] = useState(false);
 
   const router = useRouter();
@@ -61,12 +67,7 @@ export default function ClassFeedbackConfirm() {
         <div className={styled.feedback_content}>
           <div className={`${styled.wrap} ${styled.row}`}>
             <div className={styled.title}>
-              선택 수강생:{' '}
-              <span>
-                {target.reduce((total: number, lecture: any) => {
-                  return total + (lecture.members?.length || 0);
-                }, 0)}
-              </span>
+              선택 수강생: <span>{totalMembersCount}</span>
             </div>
             <div className={styled.tag}>
               {target?.length > 0 ? (

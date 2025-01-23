@@ -20,6 +20,7 @@ import { searchUserStore } from '@store';
 import { randomId } from '@utils';
 
 import styled from './styles.module.scss';
+import { Header } from '@components';
 
 function _MemberItem({
   member,
@@ -286,72 +287,80 @@ export function Search({
   };
 
   return (
-    <div className={styled.container}>
-      <div className={styled.header}>
-        <div className={styled.type}>
-          <button
-            className={`${styled.select} ${type === 'group' && styled.selected}`}
-            onClick={() => {
-              onClickSelectType('group');
-            }}>
-            <span>수업별로 보기</span>
-          </button>
-          <button
-            className={`${styled.select} ${type === 'name' && styled.selected}`}
-            onClick={() => {
-              onClickSelectType('name');
-            }}>
-            <span>이름순으로 보기</span>
-          </button>
-        </div>
-        <div className={styled.search}>
-          <div className={styled.icon}>
-            <IconSearch />
+    <>
+      <Header title="수강생 선택" />
+      <div className={styled.container}>
+        <p className={styled.title}>
+          피드백을 남길
+          <br />
+          수강생을 선택해주세요
+        </p>
+        <div className={styled.header}>
+          <div className={styled.type}>
+            <button
+              className={`${styled.select} ${type === 'group' && styled.selected}`}
+              onClick={() => {
+                onClickSelectType('group');
+              }}>
+              <span>수업별로 보기</span>
+            </button>
+            <button
+              className={`${styled.select} ${type === 'name' && styled.selected}`}
+              onClick={() => {
+                onClickSelectType('name');
+              }}>
+              <span>이름순으로 보기</span>
+            </button>
           </div>
-          <input
-            className={styled.input}
-            type="text"
-            onChange={onChangeInput}
-            value={search}
-            placeholder="수강생 이름으로 검색"
+          <div className={styled.search}>
+            <div className={styled.icon}>
+              <IconSearch />
+            </div>
+            <input
+              className={styled.input}
+              type="text"
+              onChange={onChangeInput}
+              value={search}
+              placeholder="수강생 이름으로 검색"
+            />
+          </div>
+        </div>
+        <div className={styled.info}>
+          <p>{type === 'group' ? '수업명' : '이름'}</p>
+          <button
+            className={`${styled.button} ${reverse && styled.reverse}`}
+            onClick={toggleReverse}>
+            <span>{reverse ? '내림차순' : '오름차순'}</span>
+            <IconDown />
+          </button>
+        </div>
+        {type === 'group' ? (
+          <GroupList
+            group={group}
+            reverse={reverse}
+            search={search}
+            setSelected={setSelected}
+            defaultList={selectedList}
           />
+        ) : (
+          <NameList
+            name={name}
+            reverse={reverse}
+            search={search}
+            setSelected={setSelected}
+            defaultList={selectedList}
+          />
+        )}
+        <div className={styled.button_container}>
+          <button
+            className={`${styled.button} ${selected.length === 0 ? styled.disable : styled.active}`}
+            disabled={selected.length === 0}
+            onClick={onClickSelect}>
+            {selected.length !== 0 && <span>{`${selected.length}명 `}</span>}
+            <span>선택하기</span>
+          </button>
         </div>
       </div>
-      <div className={styled.info}>
-        <p>{type === 'group' ? '수업명' : '이름'}</p>
-        <button
-          className={`${styled.button} ${reverse && styled.reverse}`}
-          onClick={toggleReverse}>
-          <span>{reverse ? '내림차순' : '오름차순'}</span>
-          <IconDown />
-        </button>
-      </div>
-      {type === 'group' ? (
-        <GroupList
-          group={group}
-          reverse={reverse}
-          search={search}
-          setSelected={setSelected}
-          defaultList={selectedList}
-        />
-      ) : (
-        <NameList
-          name={name}
-          reverse={reverse}
-          search={search}
-          setSelected={setSelected}
-          defaultList={selectedList}
-        />
-      )}
-      <div className={styled.button_container}>
-        <button
-          className={`${styled.button} ${selected.length === 0 ? styled.disable : styled.active}`}
-          disabled={selected.length === 0}
-          onClick={onClickSelect}>
-          {selected.length !== 0 && <span>{`${selected.length}명 `}</span>}
-          <span>선택하기</span>
-        </button>
-      </div>
-    </div>
+    </>
   );
 }

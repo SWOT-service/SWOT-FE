@@ -16,7 +16,7 @@ export async function submitForm(formData: FormData) {
   if (!result.success) {
     return result.error.flatten();
   } else {
-    // redirect('confirm');
+    return { success: true };
   }
   // 관련 작업 수행
 
