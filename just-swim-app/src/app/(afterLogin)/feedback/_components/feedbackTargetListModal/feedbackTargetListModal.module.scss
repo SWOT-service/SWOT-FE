@@ -3,34 +3,20 @@
 .modal {
   width: 100%;
 
-  padding-top: 20px;
-
   display: flex;
   flex-direction: column;
 
-  .modal_title {
-    padding: 0 16px;
-
-    p:nth-child(1) {
-      @include Title2-SB;
-    }
-
-    p:nth-child(2) {
-      @include Title5-M;
-      color: $--gray-600;
-    }
-  }
-
   .member_list_title {
-    margin-bottom: 11px;
+    padding-left: 16px;
 
     p {
-      @include Title3-M;
+      @include Title3-SB;
     }
   }
 
   .member_list_wrapper {
     display: flex;
+    flex-direction: column;
     gap: 12px;
     width: 100%;
 
@@ -41,49 +27,71 @@
     padding: 16px 0;
 
     overflow-x: auto;
-    white-space: nowrap;
+    white-space: nowrap; /* Prevent line breaks */
 
     .member_list_item {
       z-index: 100;
       background-color: $--gray-50;
 
       min-width: 83px;
-      height: 125px;
+      height: 60px;
 
       border-radius: 10px;
 
       position: relative;
 
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
 
       cursor: pointer;
-      .profileImg {
-        width: 46px;
-        height: 46px;
+      .image_wrapper {
+        width: 34px;
+        height: 34px;
+
+        margin-right: 8px;
+        margin-left: 15px;
 
         border-radius: 50%;
-        margin-bottom: 10px;
 
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
+        overflow: hidden;
+
+        & > img {
+          object-fit: cover;
+        }
+
+        .empty_image {
+          width: 34px;
+          height: 34px;
+
+          background-color: $--gray-300;
+        }
       }
 
       .name {
-        @include Title5-SB;
-        margin-bottom: 5px;
+        @include Title3-M;
+
+        color: $--Black;
       }
 
-      .class {
-        background-color: $--Chips;
-        padding: 2px 10px;
-        border-radius: 11px;
-        color: $--Primary-blue;
+      .lecture {
+        width: 60px;
+        height: 22px;
 
-        @include Body5-R;
+        margin-left: auto;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 11px;
+
+        background-color: $--Chips;
+
+        & > p {
+          @include Body4-R;
+
+          color: $--Primary-blue;
+        }
       }
     }
   }
