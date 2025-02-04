@@ -31,9 +31,11 @@ export function FeedbackTargetListModal({
                   <div className={styled.empty_image} />
                 )}
               </div>
-              <p className={styled.name}>{target.memberName}</p>
-              <div className={styled.lecture}>
-                <p>{target.lectureTitle}</p>
+              <div className={styled.box}>
+                <p className={styled.name}>{target.memberName} 님</p>
+                <div className={styled.lecture}>
+                  <p>{target.lectureTitle}</p>
+                </div>
               </div>
             </div>
           ))}

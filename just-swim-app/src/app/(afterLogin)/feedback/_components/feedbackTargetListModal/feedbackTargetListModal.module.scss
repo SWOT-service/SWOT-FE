@@ -17,23 +17,21 @@
   .member_list_wrapper {
     display: flex;
     flex-direction: column;
-    gap: 12px;
     width: 100%;
 
     background-color: white;
     border-radius: 10px;
     border: 1px solid var(--gray-200);
 
-    padding: 16px 0;
+    padding: 16px 16px;
 
     overflow-x: auto;
-    white-space: nowrap; /* Prevent line breaks */
+    white-space: nowrap;
 
     .member_list_item {
       z-index: 100;
-      background-color: $--gray-50;
+      background-color: white;
 
-      min-width: 83px;
       height: 60px;
 
       border-radius: 10px;
@@ -45,11 +43,10 @@
 
       cursor: pointer;
       .image_wrapper {
-        width: 34px;
-        height: 34px;
+        width: 40px;
+        height: 40px;
 
         margin-right: 8px;
-        margin-left: 15px;
 
         border-radius: 50%;
 
@@ -60,11 +57,19 @@
         }
 
         .empty_image {
-          width: 34px;
-          height: 34px;
+          width: 40px;
+          height: 40px;
 
           background-color: $--gray-300;
         }
+      }
+
+      .box {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding-bottom: 17px;
+        border-bottom: 1px solid $--gray-300;
       }
 
       .name {
