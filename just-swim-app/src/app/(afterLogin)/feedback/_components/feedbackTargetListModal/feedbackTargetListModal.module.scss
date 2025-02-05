@@ -1,55 +1,103 @@
 @import '@/globals.scss';
 
-.modal_overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
+.modal {
   width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+
   display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
+  flex-direction: column;
 
-.modal_content {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  width: 400px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
+  .member_list_title {
+    padding-left: 16px;
 
-.modal_title {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
-  font-weight: bold;
-}
+    p {
+      @include Title3-SB;
+    }
+  }
 
-.target_list {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 20px;
-}
+  .member_list_wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 
-.target_item {
-  margin-bottom: 10px;
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-}
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid var(--gray-200);
 
-.close_button {
-  background: #007bff;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-}
+    padding: 16px 16px;
 
-.close_button:hover {
-  background: #0056b3;
+    overflow-x: auto;
+    white-space: nowrap;
+
+    .member_list_item {
+      z-index: 100;
+      background-color: white;
+
+      height: 60px;
+
+      border-radius: 10px;
+
+      position: relative;
+
+      display: flex;
+      align-items: center;
+
+      cursor: pointer;
+      .image_wrapper {
+        width: 40px;
+        height: 40px;
+
+        margin-right: 8px;
+
+        border-radius: 50%;
+
+        overflow: hidden;
+
+        & > img {
+          object-fit: cover;
+        }
+
+        .empty_image {
+          width: 40px;
+          height: 40px;
+
+          background-color: $--gray-300;
+        }
+      }
+
+      .box {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding-bottom: 17px;
+        border-bottom: 1px solid $--gray-300;
+      }
+
+      .name {
+        @include Title3-M;
+
+        color: $--Black;
+      }
+
+      .lecture {
+        width: 60px;
+        height: 22px;
+
+        margin-left: auto;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 11px;
+
+        background-color: $--Chips;
+
+        & > p {
+          @include Body4-R;
+
+          color: $--Primary-blue;
+        }
+      }
+    }
+  }
 }
