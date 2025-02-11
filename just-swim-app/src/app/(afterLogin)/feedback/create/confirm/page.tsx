@@ -14,27 +14,22 @@ export default function PersonalFeedbackConfirm() {
   const { resetMemberData } = searchUserStore();
   const { getFeedbackFormData } = feedbackStore();
   const formDataState = getFeedbackFormData();
-  console.log('formDataState', formDataState);
   //   const target = JSON.parse(formDataState.target);
   const target = JSON.parse(formDataState.target || '[]');
   const [checked, setChecked] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async () => {
-    // console.log('formDataState', formDataState);
-
     // @ts-ignore
-    const target_users = target.map((lecture) => {
-      const userIds = lecture.members.map((member: any) =>
-        Number(member.userId),
-      );
-      const lectureId = Number(lecture.lectureId);
-
-      return {
-        lectureId,
-        userIds,
-      };
-    });
+    const target_users = Object.values(
+      target.reduce((acc: any, { lectureId, userId }: any) => {
+        if (!acc[lectureId]) {
+          acc[lectureId] = { lectureId: Number(lectureId), userIds: [] };
+        }
+        acc[lectureId].userIds.push(Number(userId));
+        return acc;
+      }, {}),
+    );
 
     const response = await postFeedback(
       formDataState,
@@ -42,11 +37,15 @@ export default function PersonalFeedbackConfirm() {
       target_users,
     );
 
-    if (response.success) {
-      resetMemberData();
-      router.push('/feedback');
-    } else {
-      console.log(response);
+    try {
+      if (response && response.status === 200) {
+        resetMemberData();
+        router.push('/feedback');
+      } else {
+        console.error('Feedback submission failed:', response);
+      }
+    } catch (error) {
+      console.error('Error processing feedback response:', error);
     }
   };
 
