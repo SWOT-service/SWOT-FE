@@ -1,13 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import styled from './searchClass.module.scss';
 import Location from '@assets/location.svg';
 import Calendar_SM from '@assets/calendar_sm.svg';
 import Clock from '@assets/clock.svg';
 import Check from '@assets/check.svg';
-import Clear from '@assets/clear.svg';
 
 import { Header } from '@components';
 import { searchClassStore } from '@store';
@@ -16,8 +15,7 @@ import { useRouter } from 'next/navigation';
 export default function SearchClass() {
   const router = useRouter();
   const {
-    userList,
-    // TODO: 이름이 이게 맞나?
+    classList,
     loadUserList,
     checkedList,
     checkItemHandler,
@@ -44,7 +42,7 @@ export default function SearchClass() {
           수업을 선택해주세요
         </p>
         <div className={styled.search_class}>
-          {userList.map((group: any, index: number) => (
+          {classList.map((group: any, index: number) => (
             <li
               key={index}
               className={`${styled.item} ${

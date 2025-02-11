@@ -224,7 +224,6 @@ export default function Search() {
   } = searchUserStore();
 
   //   console.log('selectedList', selectedList);
-  console.log('userList', userList);
   const [type, setType] = useState<'group' | 'name'>('group');
   const [groupName, setGroupName] = useState<
     { lecture: string; members: MemberProps[] }[] | null
