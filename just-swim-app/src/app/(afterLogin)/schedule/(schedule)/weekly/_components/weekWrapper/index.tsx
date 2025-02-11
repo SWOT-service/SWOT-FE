@@ -1,21 +1,21 @@
 'use client';
 
-import { Suspense, useState } from "react";
+import { Suspense, useState } from 'react';
 
-import { LectureProps } from "@types";
+import { LectureProps } from '@types';
 
-import { WeekInfo } from "../weekInfo";
-import { ClassList } from "../classList";
+import { WeekInfo } from '../weekInfo';
+import { ClassList } from '../classList';
 
 export function WeekWrapper({
   weeklyInfo,
-  token
+  token,
 }: {
-  weeklyInfo: { date: string, day: string, lectures: LectureProps[] }[],
-  token: string,
+  weeklyInfo: { date: string; day: string; lectures: LectureProps[] }[];
+  token: string;
 }) {
   const [selectedDate, setSelectedDate] = useState<number>(new Date().getDay());
-  
+
   return (
     <>
       <WeekInfo
@@ -31,5 +31,5 @@ export function WeekWrapper({
         />
       </Suspense>
     </>
-  )
+  );
 }

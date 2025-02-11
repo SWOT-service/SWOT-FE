@@ -9,8 +9,8 @@ import {
   useRef,
 } from 'react';
 
-import { SelectPersonInputProps } from '@types';
-import { randomId, mergeRefs } from '@utils';
+import { SelectInputProps } from '@types';
+import { mergeRefs } from '@utils';
 import { IconCancelWhite } from '@assets';
 
 import styled from './styles.module.scss';
@@ -21,13 +21,13 @@ import { searchClassStore } from '@store';
 import { ProfileCard } from '@components';
 import { UseFormSetValue } from 'react-hook-form';
 
-interface SelectClassInputProps extends SelectPersonInputProps {
+interface SelectClassInputProps extends SelectInputProps {
   setValue: UseFormSetValue<any>;
   errors: string[];
 }
 
 function _SelectClassInput(
-  { name, setValue, lecture, ...props }: SelectClassInputProps,
+  { name, setValue, lectures, ...props }: SelectClassInputProps,
   ref: ForwardedRef<HTMLInputElement>,
 ) {
   const {
@@ -41,15 +41,16 @@ function _SelectClassInput(
 
   useEffect(() => {
     /* @ts-ignore */
-    lecture?.lectureId && updateSelectedList([lecture]);
-    lecture?.lectureId && updateCheckList([lecture]);
-  }, [lecture, updateSelectedList, updateCheckList]);
+    lectures?.lectureId && updateSelectedList([lectures]);
+    lectures?.lectureId && updateCheckList([lectures]);
+  }, [lectures, updateSelectedList, updateCheckList]);
 
   useEffect(() => {
     const value = selectedList.length > 0 ? JSON.stringify(selectedList) : '';
     if (inputRef.current) {
       inputRef.current.value = value;
     }
+    // name 왜 필요?
     setValue(name, value);
   }, [selectedList, name, setValue]);
 
@@ -73,33 +74,37 @@ function _SelectClassInput(
         </Link>
       </div>
       <div className={styled.preview_wrapper}>
-        {selectedList.map((preview, index) => {
-          return (
-            <div key={index} className={styled.preview_item}>
-              <div className={styled.tag}>전체</div>
-              <div className={styled.title}>{preview.lectureTitle}</div>
-              <ProfileCard
-                // @ts-ignore
-                customers={selectedList[0].members}
-                width={28}
-                height={28}
-                xMargin={-6}
-                count={true}
-              />
+        {selectedList.map(
+          (
+            preview: { lectureId: string; lectureTitle: string; members: any[] },
+            index: number,
+          ) => {
+            return (
+              <div key={index} className={styled.preview_item}>
+                <div className={styled.tag}>전체</div>
+                <div className={styled.title}>{preview.lectureTitle}</div>
+                <ProfileCard
+                  customers={preview.members}
+                  width={28}
+                  height={28}
+                  xMargin={-6}
+                  count={true}
+                />
 
-              <button
-                className={styled.delete_button}
-                onClick={(event: MouseEvent<HTMLButtonElement>) => {
-                  event.stopPropagation();
-                  event.preventDefault();
+                <button
+                  className={styled.delete_button}
+                  onClick={(event: MouseEvent<HTMLButtonElement>) => {
+                    event.stopPropagation();
+                    event.preventDefault();
 
-                  removeItemHandler(preview.lectureId);
-                }}>
-                <IconCancelWhite width={14} height={14} />
-              </button>
-            </div>
-          );
-        })}
+                    removeItemHandler(preview.lectureId);
+                  }}>
+                  <IconCancelWhite width={14} height={14} />
+                </button>
+              </div>
+            );
+          },
+        )}
       </div>
     </div>
   );

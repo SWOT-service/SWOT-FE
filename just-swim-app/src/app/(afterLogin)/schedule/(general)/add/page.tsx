@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from "react";
+import { useState } from 'react';
 
-import { TipModal } from "@components";
+import { TipModal } from '@components';
 
-import { FormBody } from "../_components";
+import { FormBody } from '../_components';
 
 export default function AddSchedule() {
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -12,10 +12,7 @@ export default function AddSchedule() {
   return (
     <>
       <FormBody />
-      {
-        showModal &&
-        <TipModal setShowModal={setShowModal} />
-      }
+      {showModal && <TipModal setShowModal={setShowModal} />}
     </>
-  )
+  );
 }

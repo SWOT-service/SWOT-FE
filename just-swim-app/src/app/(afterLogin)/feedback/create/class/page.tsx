@@ -12,8 +12,8 @@ import { SelectClassInput } from '@/_components/form/input/selectClassInput';
 import { IconCalendar } from '@assets';
 import { useRouter } from 'next/navigation';
 import { feedbackStore } from '@/_store/feedback';
-import { submitForm } from './action';
 import { getClassList } from '@apis';
+import { searchClassStore } from '@store';
 
 interface CustomFormData {
   date: string;
@@ -24,24 +24,28 @@ interface CustomFormData {
 }
 
 export default function FeedbackWrite() {
-  const { setFeedbackHandler } = feedbackStore();
   const router = useRouter();
-  const [lecture, setLecture] = useState<any>();
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const { setFeedbackFormData, resetFeedbackFormData } = feedbackStore();
+  const { resetClassData } = searchClassStore();
+  const [lectures, setLectures] = useState<any>();
+  const [images, setImages] = useState<string[]>([]);
 
   useEffect(() => {
     const getLecturesData = async () => {
       const data = await getClassList();
       if (data.data) {
         const lectureTime = data.lectureTime ? data.lectureTime.split('-') : [];
-        setLecture({ ...data.data, lectureTime });
+        setLectures({ ...data.data, lectureTime });
       }
     };
     getLecturesData();
   }, []);
 
   const {
-    register,
-    handleSubmit,
+    register, // RHF의 상태에 연결
+    handleSubmit, // RHF에서 제공하는 함수 & event.preventDefault()를 자동으로 호출
     control,
     setValue,
     formState: { errors, isValid, isDirty },
@@ -50,11 +54,8 @@ export default function FeedbackWrite() {
     mode: 'onChange',
   });
 
-  const [images, setImages] = useState<string[]>([]);
-
   // handleSubmit에는 RHF에서 validate된 데이터가 들어간다
-  const onSubmit = handleSubmit(async (data: FormType) => {
-    // console.log('images', images);
+  const onSubmit = async (data: FormType) => {
     const formData = new FormData();
 
     formData.append('target', data.target);
@@ -90,29 +91,8 @@ export default function FeedbackWrite() {
       }
     });
 
-    setFeedbackHandler(formDataObject, 'group');
-
-    const response = await submitForm(formData);
-
-    if (response.success) {
-      router.replace('/feedback/create/confirm');
-    } else {
-      console.log(response.errors);
-    }
-
-    // router.push(`confirmClass`);
-  });
-
-  // @ts-ignore
-  const onValid = async (data: CreateState) => {
-    // RHF에 의해서 자동으로 호출
-    // form이 유효하고 검증된 데이터가 존재하는 경우에만
-    await onSubmit();
-  };
-
-  const fileRef = useRef<HTMLInputElement>(null);
-  const handleClick = () => {
-    fileRef?.current?.click();
+    setFeedbackFormData(formDataObject, 'group');
+    return router.push('/feedback/create/confirmClass');
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -138,8 +118,13 @@ export default function FeedbackWrite() {
 
   return (
     <>
-      <Header title="반별 피드백 작성하기" />
-      <form onSubmit={onValid} className={styled.feedback_write}>
+      <Header
+        title="반별 피드백 작성하기"
+        resetFunc1={resetFeedbackFormData}
+        resetFunc2={resetClassData}
+        routerBackUrl={'/feedback'}
+      />
+      <form onSubmit={handleSubmit(onSubmit)} className={styled.feedback_write}>
         <div className={styled.inner}>
           <div className={styled.select_customer}>
             <div className={styled.title}>
@@ -150,7 +135,7 @@ export default function FeedbackWrite() {
             </div>
             <SelectClassInput
               {...register('target')}
-              lecture={lecture}
+              lectures={lectures}
               setValue={setValue}
               errors={[errors.target?.message ?? '']}
             />

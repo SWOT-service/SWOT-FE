@@ -9,7 +9,7 @@ import {
   useRef,
 } from 'react';
 
-import { SelectPersonInputProps } from '@types';
+import { SelectInputProps } from '@types';
 import { randomId, mergeRefs } from '@utils';
 import { IconCancelWhite } from '@assets';
 
@@ -18,14 +18,31 @@ import Link from 'next/link';
 
 import { IconSelectUser } from '@assets';
 import { searchUserStore } from '@store';
+import { UseFormSetValue } from 'react-hook-form';
+
+interface SelectPersonInputProps extends SelectInputProps {
+  setValue: UseFormSetValue<any>;
+  errors: string[];
+}
 
 function _SelectPersonInput(
   // @ts-ignore
-  { name, setValue, ...props }: SelectPersonInputProps,
+  { name, setValue, members, ...props }: SelectPersonInputProps,
   ref: ForwardedRef<HTMLInputElement>,
 ) {
-  const { selectedList, removeItemHandler } = searchUserStore();
+  const {
+    selectedList,
+    removeItemHandler,
+    updateSelectedList,
+    updateCheckList,
+  } = searchUserStore();
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    /* @ts-ignore */
+    members?.userId && updateSelectedList([members]);
+    members?.userId && updateCheckList([members]);
+  }, [members, updateSelectedList, updateCheckList]);
 
   useEffect(() => {
     const value = selectedList.length > 0 ? JSON.stringify(selectedList) : '';
@@ -34,6 +51,8 @@ function _SelectPersonInput(
     }
     setValue(name, value);
   }, [selectedList, name, setValue]);
+
+  console.log('selectedList: ', selectedList);
 
   return (
     <div className={styled.input_wrapper}>
@@ -48,9 +67,7 @@ function _SelectPersonInput(
         readOnly
       />
       <div className={styled.input_inner_wrapper}>
-        <Link
-          href={'/feedback/search/person'}
-          className={styled.select_user}>
+        <Link href={'/feedback/search/person'} className={styled.select_user}>
           <div className={styled.icon_wrapper}>
             <IconSelectUser width={30} height={30} />
             <div className={styled.add_txt}>추가하기</div>
@@ -58,9 +75,9 @@ function _SelectPersonInput(
         </Link>
       </div>
       <div className={styled.preview_wrapper}>
-        {selectedList.map((preview, index) => {
+        {selectedList.map((preview: any, index: number) => {
           return (
-            <div key={randomId()} className={styled.preview_item}>
+            <div key={index} className={styled.preview_item}>
               <div
                 className={styled.profileImg}
                 style={{

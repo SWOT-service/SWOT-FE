@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 
 import { FeedbackProps } from '@types';
 import { Fetch } from '@utils';
+import api from '../api';
 
 // import { unstable_cache } from 'next/cache';
 
@@ -17,27 +18,28 @@ const URL = `${process.env.NEXT_PUBLIC_API_URL}/feedback`;
 //   return json.data;
 // }
 
+interface FeedbackValue {
+  feedbackType: string;
+  feedbackDate: string;
+  feedbackLink: string;
+  feedbackContent: string;
+  feedbackTarget: string;
+  feedbackImage: string[];
+}
 // @ts-ignore
 async function postFeedback(data, type, target) {
-  let value = {
+  const value: FeedbackValue = {
     feedbackType: type,
     feedbackDate: data.date,
     feedbackLink: data.link,
     feedbackContent: data.content,
     feedbackTarget: target,
+    feedbackImage: data.file?.map((file: any) => file.name),
   };
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/feedback`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
-      'Content-Type': 'application/json',
-    },
+  return await api('/feedback', 'POST', {
     body: JSON.stringify(value),
   });
-
-  const json = await response.json();
-  return json;
 }
 
 // _apis 폴더 내부로 이동
@@ -50,7 +52,6 @@ async function getFeedback(): Promise<FeedbackProps[] | null> {
       credential: true,
     },
   });
-
   if (result.success) {
     return result.data;
   } else {
@@ -84,7 +85,6 @@ async function getSortedFeedback(): Promise<FeedbackProps[] | null> {
   const result = (await getFeedback()) || [];
 
   result.sort(sortFeedback);
-
   return result;
 }
 
@@ -109,7 +109,6 @@ async function getFeedbackDetail(id: string): Promise<FeedbackProps[] | null> {
   });
 
   if (result.success) {
-    return result.data;
     return result.data;
   } else {
     return notFound();

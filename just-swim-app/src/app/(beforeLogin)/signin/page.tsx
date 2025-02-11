@@ -1,12 +1,6 @@
-'use client';
-
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-
 import JustSwimSVG from '@assets/logo.svg';
-import { JUST_SWIM, ROUTES, SNS, TEXT } from '@data';
+import { JUST_SWIM, SNS, TEXT } from '@data';
 import { Provider } from '@types';
-import { getTokenInCookies } from '@utils';
 
 import { SNSSignInButton } from './_components/button/snsSignIpButton';
 import styles from './page.module.scss';
@@ -16,22 +10,6 @@ export interface SNSLoginButtonProps {
 }
 
 export default function SignIn() {
-  const router = useRouter();
-
-  useEffect(() => {
-    const checkCookies = async () => {
-      const isLogin = await getTokenInCookies();
-
-      if (!isLogin) {
-        return;
-      } else {
-        router.push(ROUTES.SCHEDULE.root);
-      }
-    };
-
-    checkCookies();
-  }, [router]);
-
   return (
     <>
       <div className={styles.header}>

@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 
 export default function ClassFeedbackConfirm() {
   // @ts-ignore
-  const { selectedList, reset } = searchClassStore();
+  const { selectedList, resetClassData } = searchClassStore();
   const { formDataState } = feedbackStore();
   const target = JSON.parse(formDataState.target || '[]');
 
@@ -24,22 +24,34 @@ export default function ClassFeedbackConfirm() {
 
   const router = useRouter();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // @ts-ignore
     const userIds = (target[0]?.members || []).map((el) => Number(el.userId));
     const lectureId = Number(target[0].lectureId);
     const target_users = [
       {
-        userIds,
         lectureId,
+        userIds,
       },
     ];
 
-    postFeedback(formDataState, formDataState.type, target_users);
+    try {
+      const data = await postFeedback(
+        formDataState,
+        formDataState.type,
+        target_users,
+      );
 
-    reset();
+      resetClassData();
+      router.replace('/feedback');
+      window.location.href = '/feedback';
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-    router.push('/feedback');
+  const handleBack = () => {
+    router.back();
   };
 
   return (
@@ -149,7 +161,9 @@ export default function ClassFeedbackConfirm() {
       </div>
 
       <div className={styled.btn_wrap}>
-        <button className={styled.back_btn}>돌아가기</button>
+        <button onClick={handleBack} className={styled.back_btn}>
+          돌아가기
+        </button>
         <button
           className={styled.submit_btn}
           disabled={!checked}

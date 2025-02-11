@@ -1,5 +1,5 @@
-import { getCachedMemberGroupByLecture, getCachedSortedMember } from "./server";
-import { Search } from "./search";
+import { getCachedMemberGroupByLecture, getCachedSortedMember } from './server';
+import { Search } from './search';
 
 export async function SearchWrapper() {
   // 데이터 받아와서 전달
@@ -9,5 +9,5 @@ export async function SearchWrapper() {
     <>
       <Search group={memberGroupByLecture} name={sortedMember} />
     </>
-  )
+  );
 }
