@@ -1,17 +1,22 @@
+'use client';
+
 import { BottomNav, UserIconHeader } from '@components';
 import {
   ScheduleAddButton,
   ScheduleCommonLayout,
 } from './(schedule)/_components';
-import { Suspense } from 'react';
-import { getTokenInCookies } from '@utils';
+import { Suspense, useEffect, useState } from 'react';
+import { setTokenInCookies } from '@utils';
+import { useSearchParams } from 'next/navigation';
 
-export default async function Layout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const token = await getTokenInCookies();
+export default function Layout({ children }: { children: React.ReactNode }) {
+  const params = useSearchParams().get('token');
+
+  useEffect(() => {
+    if (params) {
+      setTokenInCookies(params);
+    }
+  }, [params]);
 
   return (
     <>
@@ -19,7 +24,7 @@ export default async function Layout({
       <ScheduleCommonLayout />
       <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
       <BottomNav />
-      <ScheduleAddButton token={token} />
+      <ScheduleAddButton token={params || ''} />
     </>
   );
 }

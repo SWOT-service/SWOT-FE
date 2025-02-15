@@ -1,13 +1,24 @@
-import { getTodayScheduleCount } from "@utils";
+'use client';
 
-import { ScheduleCommon } from "../scheduleCommon";
+import { getTodayScheduleCount } from '@utils';
 
-export async function ScheduleCommonLayout() {
-  const todayCount = await getTodayScheduleCount();
+import { ScheduleCommon } from '../scheduleCommon';
+import { useEffect, useState } from 'react';
+
+export function ScheduleCommonLayout() {
+  const [todayCount, setTodayCount] = useState<number | null>(0);
+
+  useEffect(() => {
+    const fetchTodayCount = async () => {
+      const todayCount = await getTodayScheduleCount();
+      setTodayCount(todayCount);
+    };
+    fetchTodayCount();
+  }, []);
 
   return (
     <>
-      <ScheduleCommon count={todayCount} />
+      <ScheduleCommon count={todayCount || 0} />
     </>
-  )
+  );
 }

@@ -3,13 +3,18 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
-  const hasToken = getTokenInCookies();
+  const hasToken = await getTokenInCookies();
 
   if (hasToken && (pathname === '/signin' || pathname === '/')) {
     return NextResponse.redirect(new URL('/schedule', req.url));
   }
-  if (!hasToken && pathname !== '/signin') {
-    return NextResponse.redirect(new URL('/signin', req.url));
+  if (!hasToken) {
+    const pathname = req.nextUrl.pathname;
+    if (pathname === '/schedule') {
+      return NextResponse.next();
+    } else if (pathname !== '/signin') {
+      return NextResponse.redirect(new URL('/signin', req.url));
+    }
   }
   return NextResponse.next();
 }
