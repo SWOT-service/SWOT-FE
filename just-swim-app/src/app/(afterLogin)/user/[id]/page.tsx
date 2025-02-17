@@ -18,7 +18,7 @@ import {
   IconRepeatTime,
   IconGallery,
 } from '@assets';
-import NoProfile from '@/_assets/images/no_profile.png';
+import NoProfile from '@assets/no_profile.png';
 import { MemberProps } from '@types';
 import Link from 'next/link';
 import dayjs from 'dayjs';
